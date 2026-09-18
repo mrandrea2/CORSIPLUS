@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E3A1C">
+<title>Corsi Plus · CT Scaligero</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎾</text></svg>">
+<style>
+  :root{--dark:#0E3A1C;--dark2:#16512A;--terra:#C4553B;--sand:#EDE7D9;--pale:#E8F0E5;
+        --lime:#9FD27F;--ink:#14261A;--line:#D6D0C2;--ok:#2E7D32;--warn:#B8860B}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:#F7F5EF;color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding-bottom:30px}
+  .wrap{max-width:640px;margin:0 auto;padding:0 14px}
+  header{background:var(--dark);color:#fff;padding:16px 0;border-bottom:4px solid var(--terra)}
+  .brand{font-size:12px;letter-spacing:2px;color:var(--lime);font-weight:700}
+  h1{font-size:26px;margin:4px 0 0;font-weight:800}
+  .sub{font-size:14px;color:#CFE3D2;margin-top:4px}
+
+  .namebar{background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px;margin-top:14px}
+  .namebar label{font-size:12px;font-weight:800;letter-spacing:1px;color:var(--dark)}
+  select,input{width:100%;padding:12px;border:2px solid var(--line);border-radius:10px;
+    font-size:17px;font-weight:700;margin-top:6px;background:#fff;color:var(--ink)}
+
+  h2{font-size:19px;margin:22px 0 8px;color:var(--dark);font-weight:800}
+  .day{background:#fff;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden}
+  .day.today{border:2px solid var(--terra)}
+  .dayhead{background:var(--sand);padding:10px 14px;font-weight:800;font-size:16px;color:var(--dark);
+    display:flex;justify-content:space-between;align-items:center}
+  .day.today .dayhead{background:var(--terra);color:#fff}
+  .slot{padding:12px 14px;border-top:1px solid var(--line)}
+  .slothead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .time{background:var(--dark);color:#fff;border-radius:8px;padding:5px 9px;font-weight:800;font-size:13px}
+  .mod{font-weight:800;font-size:17px;color:var(--dark)}
+  .mod.cal{color:var(--terra)}
+  .cap{font-size:12px;color:#4A5A50;margin-left:auto}
+  ol.lst{margin:8px 0 0;padding-left:22px}
+  ol.lst li{font-size:15px;margin:3px 0}
+  ol.lst li.me{font-weight:800;color:var(--ok)}
+  .res{color:#7A6A3A}
+  .resbox{margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)}
+  .resbox b{font-size:12px;letter-spacing:1px;color:var(--warn)}
+  .btn{width:100%;margin-top:10px;padding:12px;border:0;border-radius:10px;background:var(--dark);
+    color:#fff;font-weight:800;font-size:15px;cursor:pointer}
+  .btn.res{background:var(--warn)}
+  .btn:disabled{background:#B9B2A6}
+  .msg{padding:12px;border-radius:10px;margin:10px 0;font-size:15px;font-weight:700}
+  .msg.err{background:#F8D7DA;color:#842029}
+  .msg.ok{background:#D6EBD8;color:#1B5E20}
+  .note{font-size:13px;color:#4A5A50;font-style:italic}
+  .setup{background:#FFF3CD;border:2px solid var(--warn);border-radius:12px;padding:14px;margin-top:14px}
+  .setup code{background:#fff;padding:2px 5px;border-radius:4px;font-size:13px}
+  .adminbar{margin-top:16px;font-size:13px}
+  .adminbar button{background:none;border:0;color:#4A5A50;text-decoration:underline;font-size:13px;cursor:pointer}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+  <div class="brand">CT SCALIGERO</div>
+  <h1>Corsi Plus</h1>
+  <div class="sub" id="sub"></div>
+</div></header>
+
+<div class="wrap">
+  <div id="setup"></div>
+
+  <div class="namebar">
+    <label for="atleta">CHI SEI</label>
+    <select id="atleta"><option value="">— scegli il tuo nome —</option></select>
+  </div>
+
+  <div id="msg"></div>
+  <h2 id="weekTitle">Questa settimana</h2>
+  <div id="days"></div>
+
+  <div class="adminbar">
+    <button id="adminBtn">Area preparatori</button>
+  </div>
+  <p class="note" style="margin-top:14px">Ci si iscrive solo per la settimana in corso. Una volta iscritto, il nome non può essere sovrascritto da nessuno.</p>
+</div>
+
+<script>
+/* ============================================================
+   1) CONFIGURAZIONE — da compilare
+   ============================================================ */
+const SUPABASE_URL  = "";   // es. https://abcdxyz.supabase.co
+const SUPABASE_KEY  = "";   // chiave "anon public"
+const ADMIN_PIN     = "2027";       // PIN preparatori per rimuovere un'iscrizione
+
+// Elenco atleti: sostituisci con i nomi reali (nome + iniziale del cognome)
+const ATLETI = [
+  "Atleta 1","Atleta 2","Atleta 3","Atleta 4","Atleta 5",
+  "Atleta 6","Atleta 7","Atleta 8","Atleta 9","Atleta 10"
+];
+
+// Posti titolari per modulo
+const POSTI = { "FORZA":5, "VELOCITÀ":8, "RESISTENZA":8, "CALCETTONE":10 };
+const MAX_RISERVE = 10;
+
+// Lunedì di riferimento della settimana A (come nell'app dei preparatori)
+const DEFAULT_ANCHOR = "2026-10-05";
+
+/* ============================================================
+   2) DATI FISSI
+   ============================================================ */
+const DAYS  = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì"];
+const SLOTS = ["15:30 – 16:30","16:30 – 17:30","17:30 – 18:30"];
+const PLUS  = {
+  0:["FORZA","VELOCITÀ","RESISTENZA"],
+  1:["VELOCITÀ","RESISTENZA","FORZA"],
+  2:["RESISTENZA","FORZA","VELOCITÀ"],
+  3:["FORZA","VELOCITÀ","RESISTENZA"],
+  4:["VELOCITÀ","RESISTENZA","CALCETTONE"]
+};
+const THEMES = ["VELOCITÀ","FORZA","COORDINAZIONE / RITMO","RESISTENZA","GIOCHI"];
+const GRID = {A:[0,1,2,3,4],B:[2,3,4,0,1],C:[4,0,1,2,3],D:[1,2,3,4,0],E:[3,4,0,1,2]};
+const WEEKS = ["A","B","C","D","E"];
+
+/* ============================================================
+   3) SETTIMANA
+   ============================================================ */
+function mondayOf(d){
+  const x=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  x.setDate(x.getDate()-((x.getDay()+6)%7)); return x;
+}
+function iso(d){ return d.toISOString().slice(0,10); }
+const THIS_MONDAY = mondayOf(new Date());
+const WEEK_KEY = iso(THIS_MONDAY);
+function weekLetter(){
+  const anchor=mondayOf(new Date(DEFAULT_ANCHOR+"T12:00:00"));
+  const diff=Math.round((THIS_MONDAY-anchor)/(7*24*3600*1000));
+  return WEEKS[((diff%5)+5)%5];
+}
+function todayIdx(){ const d=(new Date().getDay()+6)%7; return d<=4?d:null; }
+
+const fmt=new Intl.DateTimeFormat("it-IT",{day:"numeric",month:"long"});
+const dateOf=i=>{ const d=new Date(THIS_MONDAY); d.setDate(d.getDate()+i); return d; };
+
+document.getElementById("sub").textContent =
+  "Settimana "+weekLetter()+" · dal "+fmt.format(THIS_MONDAY)+" al "+fmt.format(dateOf(4));
+const t0=todayIdx();
+document.getElementById("weekTitle").textContent =
+  t0===null ? "Questa settimana" : "Oggi è "+DAYS[t0]+" · tema del giorno: "+THEMES[GRID[weekLetter()][t0]];
+
+/* ============================================================
+   4) SUPABASE (REST)
+   ============================================================ */
+const CONFIGURED = SUPABASE_URL && SUPABASE_KEY;
+const API = SUPABASE_URL + "/rest/v1/iscrizioni";
+const HEAD = {
+  "apikey": SUPABASE_KEY,
+  "Authorization": "Bearer " + SUPABASE_KEY,
+  "Content-Type": "application/json"
+};
+
+async function loadIscrizioni(){
+  const url = API + "?week_key=eq." + WEEK_KEY + "&select=*&order=created_at.asc";
+  const r = await fetch(url, {headers: HEAD});
+  if(!r.ok) throw new Error("Lettura non riuscita ("+r.status+")");
+  return await r.json();
+}
+async function iscrivi(day, slot, nome){
+  const r = await fetch(API, {
+    method:"POST",
+    headers:{...HEAD, "Prefer":"return=representation"},
+    body: JSON.stringify([{week_key:WEEK_KEY, day, slot, nome}])
+  });
+  if(r.status===409) throw new Error("Sei già iscritto a questa sessione.");
+  if(!r.ok) throw new Error("Iscrizione non riuscita ("+r.status+")");
+  return await r.json();
+}
+async function rimuovi(id){
+  const r = await fetch(API+"?id=eq."+id, {method:"DELETE", headers:{...HEAD, "Prefer":"return=minimal"}});
+  if(!r.ok) throw new Error("Rimozione non riuscita ("+r.status+"). Serve la chiave service_role.");
+}
+
+/* ============================================================
+   5) UI
+   ============================================================ */
+let DATA=[], adminMode=false;
+const $=id=>document.getElementById(id);
+
+const sel=$("atleta");
+ATLETI.forEach(n=>{ const o=document.createElement("option"); o.value=n; o.textContent=n; sel.appendChild(o); });
+sel.value = localStorage.getItem("atleta") || "";
+sel.onchange = ()=>{ localStorage.setItem("atleta", sel.value); render(); };
+
+function setMsg(text, cls){
+  $("msg").innerHTML = text ? `<div class="msg ${cls}">${text}</div>` : "";
+  if(text) setTimeout(()=>{ $("msg").innerHTML=""; }, 5000);
+}
+
+function render(){
+  if(!CONFIGURED){
+    $("setup").innerHTML = `<div class="setup">
+      <b>App non ancora collegata al database.</b><br>
+      Inserisci <code>SUPABASE_URL</code> e <code>SUPABASE_KEY</code> in cima a <code>index.html</code>.
+      Le istruzioni sono nel README.</div>`;
+    return;
+  }
+  const me = sel.value;
+  const today = todayIdx();
+  let h="";
+  DAYS.forEach((dn,di)=>{
+    h += `<div class="day ${di===today?"today":""}">
+      <div class="dayhead"><span>${dn} ${fmt.format(dateOf(di))}</span>${di===today?"<span>OGGI</span>":""}</div>`;
+    PLUS[di].forEach((mod,si)=>{
+      const cap = POSTI[mod] || 8;
+      const lista = DATA.filter(x=>x.day===di && x.slot===si);
+      const tit = lista.slice(0,cap), ris = lista.slice(cap, cap+MAX_RISERVE);
+      const iscritto = lista.some(x=>x.nome===me);
+      const pieno = tit.length>=cap;
+      const risPieno = ris.length>=MAX_RISERVE;
+      h += `<div class="slot">
+        <div class="slothead">
+          <span class="time">${SLOTS[si]}</span>
+          <span class="mod ${mod==="CALCETTONE"?"cal":""}">${mod}</span>
+          <span class="cap">${tit.length}/${cap}${ris.length?" · "+ris.length+" ris.":""}</span>
+        </div>`;
+      h += `<ol class="lst">` + (tit.length
+        ? tit.map(x=>`<li class="${x.nome===me?"me":""}">${x.nome}${adminMode?` <button data-del="${x.id}" style="border:0;background:none;color:#C4553B;font-weight:800">✕</button>`:""}</li>`).join("")
+        : `<li style="list-style:none;margin-left:-22px;color:#7A7A7A">Nessun iscritto</li>`) + `</ol>`;
+      if(ris.length){
+        h += `<div class="resbox"><b>RISERVE</b><ol class="lst">` +
+          ris.map(x=>`<li class="res ${x.nome===me?"me":""}">${x.nome}${adminMode?` <button data-del="${x.id}" style="border:0;background:none;color:#C4553B;font-weight:800">✕</button>`:""}</li>`).join("") +
+          `</ol></div>`;
+      }
+      if(!me){
+        h += `<button class="btn" disabled>Scegli prima il tuo nome</button>`;
+      } else if(iscritto){
+        h += `<button class="btn" disabled>Sei iscritto ✓</button>`;
+      } else if(!pieno){
+        h += `<button class="btn" data-go="${di}-${si}">ISCRIVITI</button>`;
+      } else if(!risPieno){
+        h += `<button class="btn res" data-go="${di}-${si}">METTITI IN RISERVA (${ris.length+1}ª)</button>`;
+      } else {
+        h += `<button class="btn" disabled>Completo, riserve esaurite</button>`;
+      }
+      h += `</div>`;
+    });
+    h += `</div>`;
+  });
+  $("days").innerHTML = h;
+
+  document.querySelectorAll("[data-go]").forEach(b=>b.onclick=async()=>{
+    const [di,si]=b.dataset.go.split("-").map(Number);
+    b.disabled=true; b.textContent="Invio…";
+    try{
+      await iscrivi(di,si,sel.value);
+      DATA = await loadIscrizioni();
+      setMsg("Iscrizione registrata.","ok");
+    }catch(e){ setMsg(e.message,"err"); }
+    render();
+  });
+  document.querySelectorAll("[data-del]").forEach(b=>b.onclick=async()=>{
+    if(!confirm("Rimuovere questa iscrizione?")) return;
+    try{ await rimuovi(b.dataset.del); DATA=await loadIscrizioni(); setMsg("Iscrizione rimossa.","ok"); }
+    catch(e){ setMsg(e.message,"err"); }
+    render();
+  });
+}
+
+$("adminBtn").onclick=()=>{
+  if(adminMode){ adminMode=false; $("adminBtn").textContent="Area preparatori"; render(); return; }
+  const pin=prompt("PIN preparatori");
+  if(pin===ADMIN_PIN){ adminMode=true; $("adminBtn").textContent="Esci dall'area preparatori"; render(); }
+  else if(pin!==null) alert("PIN errato.");
+};
+
+(async function start(){
+  if(!CONFIGURED){ render(); return; }
+  try{ DATA = await loadIscrizioni(); }
+  catch(e){ setMsg(e.message,"err"); }
+  render();
+  setInterval(async()=>{ try{ DATA=await loadIscrizioni(); render(); }catch(e){} }, 30000);
+})();
+</script>
+</body>
+</html>
