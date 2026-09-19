@@ -8,22 +8,31 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎾</text></svg>">
 <style>
   :root{--dark:#0E3A1C;--dark2:#16512A;--terra:#C4553B;--sand:#EDE7D9;--pale:#E8F0E5;
-        --lime:#9FD27F;--ink:#14261A;--line:#D6D0C2;--ok:#2E7D32;--warn:#B8860B}
+        --lime:#9FD27F;--ink:#14261A;--line:#D6D0C2;--ok:#2E7D32;--warn:#B8860B;--blu:#2B5EA7}
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   body{margin:0;background:#F7F5EF;color:var(--ink);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding-bottom:30px}
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding-bottom:86px}
   .wrap{max-width:640px;margin:0 auto;padding:0 14px}
-  header{background:var(--dark);color:#fff;padding:16px 0;border-bottom:4px solid var(--terra)}
+  header{background:var(--dark);color:#fff;padding:14px 0;border-bottom:4px solid var(--terra)}
   .brand{font-size:12px;letter-spacing:2px;color:var(--lime);font-weight:700}
-  h1{font-size:26px;margin:4px 0 0;font-weight:800}
-  .sub{font-size:14px;color:#CFE3D2;margin-top:4px}
+  h1{font-size:24px;margin:2px 0 0;font-weight:800}
+  .sub{font-size:13px;color:#CFE3D2;margin-top:3px}
 
-  .namebar{background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px;margin-top:14px}
+  h2{font-size:19px;margin:20px 0 8px;color:var(--dark);font-weight:800}
+  h3{font-size:16px;margin:0 0 6px;font-weight:800}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+  .note{font-size:13px;color:#4A5A50;font-style:italic}
+
+  .tema{background:var(--dark);color:#fff;border-radius:14px;padding:14px;margin-top:12px}
+  .tema .lab{font-size:12px;letter-spacing:1.5px;color:var(--lime);font-weight:700}
+  .tema .big{font-size:26px;font-weight:800;margin-top:2px}
+  .tema .small{font-size:13px;color:#CFE3D2;margin-top:6px}
+
+  .namebar{background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px;margin-top:12px}
   .namebar label{font-size:12px;font-weight:800;letter-spacing:1px;color:var(--dark)}
-  select,input{width:100%;padding:12px;border:2px solid var(--line);border-radius:10px;
+  select{width:100%;padding:12px;border:2px solid var(--line);border-radius:10px;
     font-size:17px;font-weight:700;margin-top:6px;background:#fff;color:var(--ink)}
 
-  h2{font-size:19px;margin:22px 0 8px;color:var(--dark);font-weight:800}
   .day{background:#fff;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden}
   .day.today{border:2px solid var(--terra)}
   .dayhead{background:var(--sand);padding:10px 14px;font-weight:800;font-size:16px;color:var(--dark);
@@ -38,19 +47,38 @@
   ol.lst{margin:8px 0 0;padding-left:22px}
   ol.lst li{font-size:15px;margin:3px 0}
   ol.lst li.me{font-weight:800;color:var(--ok)}
-  .res{color:#7A6A3A}
+  li.res{color:#7A6A3A}
   .resbox{margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)}
   .resbox b{font-size:12px;letter-spacing:1px;color:var(--warn)}
   .btn{width:100%;margin-top:10px;padding:12px;border:0;border-radius:10px;background:var(--dark);
     color:#fff;font-weight:800;font-size:15px;cursor:pointer}
   .btn.res{background:var(--warn)}
   .btn:disabled{background:#B9B2A6}
+  .xbtn{border:1px solid var(--terra);background:#fff;color:var(--terra);font-weight:800;
+    font-size:11px;border-radius:6px;padding:2px 7px;margin-left:6px;cursor:pointer}
   .msg{padding:12px;border-radius:10px;margin:10px 0;font-size:15px;font-weight:700}
   .msg.err{background:#F8D7DA;color:#842029}
   .msg.ok{background:#D6EBD8;color:#1B5E20}
-  .note{font-size:13px;color:#4A5A50;font-style:italic}
-  .setup{background:#FFF3CD;border:2px solid var(--warn);border-radius:12px;padding:14px;margin-top:14px}
+  .setup{background:#FFF3CD;border:2px solid var(--warn);border-radius:12px;padding:14px;margin-top:12px}
   .setup code{background:#fff;padding:2px 5px;border-radius:4px;font-size:13px}
+
+  ul{margin:6px 0;padding-left:20px}
+  .si li,.no li{font-size:15px;margin:6px 0;line-height:1.35}
+  .si{border-left:5px solid var(--ok);padding-left:10px}
+  .no{border-left:5px solid var(--terra);padding-left:10px}
+
+  .breath{display:block;background:var(--dark);color:#fff;text-decoration:none;border-radius:12px;
+    padding:15px;margin-bottom:8px;font-weight:800;font-size:16px}
+  .breath.b2{background:var(--blu)}
+  .breath.b3{background:var(--terra)}
+  .breath span{display:block;font-weight:500;font-size:13px;opacity:.9;margin-top:3px}
+
+  nav{position:fixed;left:0;right:0;bottom:0;background:var(--dark);display:flex;
+    padding-bottom:env(safe-area-inset-bottom)}
+  nav button{flex:1;background:none;border:0;border-top:4px solid transparent;color:#8FB697;
+    padding:13px 2px;font-size:12px;font-weight:800;letter-spacing:.5px;cursor:pointer}
+  nav button.on{color:#fff;border-top-color:var(--terra)}
+  .hidden{display:none}
   .adminbar{margin-top:16px;font-size:13px}
   .adminbar button{background:none;border:0;color:#4A5A50;text-decoration:underline;font-size:13px;cursor:pointer}
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -65,47 +93,184 @@
 </div></header>
 
 <div class="wrap">
-  <div id="setup"></div>
 
-  <div class="namebar">
-    <label for="atleta">CHI SEI</label>
-    <select id="atleta"><option value="">— scegli il tuo nome —</option></select>
-  </div>
+  <section id="tab-isc">
+    <div class="tema" id="tema"></div>
+    <div id="setup"></div>
+    <div class="namebar">
+      <label for="atleta">CHI SEI</label>
+      <select id="atleta"><option value="">— scegli il tuo nome —</option></select>
+    </div>
+    <div id="msg"></div>
+    <h2>Questa settimana</h2>
+    <div id="days"></div>
+    <div class="adminbar"><button id="adminBtn">Area preparatori</button></div>
+    <p class="note" style="margin-top:12px">Ci si iscrive solo per la settimana in corso. Il nome di un iscritto non può essere sovrascritto da nessuno.<br>
+    Hai sbagliato? Puoi annullare la tua iscrizione entro 15 minuti. Dopo, chiedi a un preparatore.</p>
+  </section>
 
-  <div id="msg"></div>
-  <h2 id="weekTitle">Questa settimana</h2>
-  <div id="days"></div>
+  <section id="tab-reg" class="hidden">
+    <h2>Cosa sono i Plus</h2>
+    <div class="card">
+      <p style="margin:0;font-size:16px">Allenamenti mirati a <b>obiettivi fisici specifici</b>, per chi segue l'atletica con costanza e vuole una possibilità in più per migliorare.</p>
+    </div>
 
-  <div class="adminbar">
-    <button id="adminBtn">Area preparatori</button>
-  </div>
-  <p class="note" style="margin-top:14px">Ci si iscrive solo per la settimana in corso. Una volta iscritto, il nome non può essere sovrascritto da nessuno.</p>
+    <h2>Quando</h2>
+    <div class="card">
+      <h3 style="color:var(--terra)">Dal lunedì al venerdì</h3>
+      <ul>
+        <li><b>3 corsi al giorno</b>, uno per ogni ora</li>
+        <li><b>15:30 · 16:30 · 17:30</b></li>
+        <li>Ogni corso dura <b>un'ora</b></li>
+      </ul>
+      <p class="note">I moduli cambiano orario ogni giorno: guarda la sezione Iscrizioni.</p>
+    </div>
+
+    <h2>Cosa devi fare</h2>
+    <div class="card">
+      <ul class="si" style="list-style:none;padding-left:10px">
+        <li><b>Iscriverti dall'app</b> rispettando i posti disponibili</li>
+        <li>Iscriverti <b>a inizio settimana</b>, così organizzi scuola, tennis e tornei</li>
+        <li>Puoi fare <b>più allenamenti nello stesso giorno</b> se gli obiettivi sono diversi</li>
+        <li>Puoi venire anche nei <b>giorni in cui non hai tennis</b></li>
+        <li>Se poi inizia il tennis, puoi <b>finire 30 minuti prima</b></li>
+      </ul>
+    </div>
+
+    <h2>Cosa non puoi fare</h2>
+    <div class="card">
+      <ul class="no" style="list-style:none;padding-left:10px">
+        <li><b>Presentarti senza esserti iscritto.</b><br><span class="note">Il preparatore non riesce a organizzare il lavoro.</span></li>
+        <li><b>Iscriverti e poi non venire senza avvisare.</b><br><span class="note">Togli il posto a un compagno che era in riserva.</span></li>
+        <li><b>Scegliere solo gli allenamenti meno faticosi.</b><br><span class="note">Per migliorare servono obiettivi diversi, non solo quelli che piacciono.</span></li>
+        <li><b>Arrivare ad allenamento già iniziato.</b><br><span class="note">Se il Plus inizia alle 15:30 e tu finisci tennis alle 16, non ti puoi iscrivere.</span></li>
+      </ul>
+    </div>
+
+    <h2>E se non puoi?</h2>
+    <div class="card" style="background:var(--pale);border-color:var(--ok)">
+      <h3 style="color:var(--ok)">Niente paura</h3>
+      <p style="margin:0;font-size:15px">Vai al <b>campo 8</b> prima o dopo la tua lezione di tennis: c'è sempre almeno un preparatore che ti propone esercizi adatti a te.</p>
+      <p style="margin:8px 0 0;font-size:15px">Se il Plus inizia alle 16:30 e tu finisci tennis alle 17, vai al campo 8: ti verranno assegnati esercizi in attesa, oppure ti unisci alle attività in corso.</p>
+    </div>
+  </section>
+
+  <section id="tab-cibo" class="hidden">
+    <h2>Merenda prima dell'allenamento</h2>
+    <div class="card">
+      <h3 style="color:var(--ok)">1-2 ore prima · sì</h3>
+      <ul class="si" style="list-style:none;padding-left:10px">
+        <li>Pane con marmellata o miele</li>
+        <li>Banana o altra frutta fresca</li>
+        <li>Fette biscottate</li>
+        <li>Yogurt bianco con frutta</li>
+        <li>Una fetta di crostata semplice</li>
+      </ul>
+      <h3 style="color:var(--terra);margin-top:14px">Meglio evitare</h3>
+      <ul class="no" style="list-style:none;padding-left:10px">
+        <li>Merendine e snack confezionati</li>
+        <li>Patatine e fritti</li>
+        <li>Bibite gassate ed energy drink</li>
+        <li>Panini con salumi grassi o tanto formaggio</li>
+      </ul>
+      <p class="note">Restano sullo stomaco: ti senti pesante e ti alleni peggio.</p>
+    </div>
+
+    <h2>Se hai poco tempo</h2>
+    <div class="card">
+      <p style="margin:0;font-size:15px"><b>30 minuti prima</b> vai leggero: un frutto, oppure una manciata di frutta secca (mandorle, noci), e acqua. Niente di più.</p>
+    </div>
+
+    <h2>Dopo l'allenamento</h2>
+    <div class="card">
+      <ul>
+        <li><b>Bevi subito</b>, anche se non hai sete</li>
+        <li>Entro un paio d'ore fai un <b>pasto completo</b>: pasta o riso, una fonte di proteine (carne, pesce, uova, legumi), verdura e frutta</li>
+        <li>Se la cena è lontana, fai uno spuntino: yogurt e frutta, oppure pane e bresaola</li>
+      </ul>
+    </div>
+
+    <h2>Acqua</h2>
+    <div class="card">
+      <ul>
+        <li><b>Borraccia sempre in borsa</b></li>
+        <li>Piccoli sorsi ogni 15-20 minuti durante l'allenamento</li>
+        <li>Se hai sete sei già in ritardo: bevi prima di averne</li>
+      </ul>
+    </div>
+
+    <h2>Tre regole d'oro</h2>
+    <div class="card" style="background:var(--sand)">
+      <ul>
+        <li><b>Mai allenarsi a stomaco vuoto</b>, e mai subito dopo un pasto abbondante: lascia passare 2-3 ore</li>
+        <li><b>Colazione tutti i giorni</b>, anche quando ti alleni al pomeriggio</li>
+        <li><b>Frutta e verdura ogni giorno</b>: sono il recupero che non si vede</li>
+      </ul>
+    </div>
+    <p class="note">Sono indicazioni generali. Se hai allergie, intolleranze o esigenze particolari, parlane con i tuoi genitori e con il tuo medico.</p>
+  </section>
+
+  <section id="tab-resp" class="hidden">
+    <h2>Respirazioni guidate</h2>
+    <p class="note" style="margin-bottom:12px">Tocca un esercizio e segui la voce. Bastano pochi minuti e si possono fare ovunque.</p>
+
+    <h3 style="color:var(--dark);margin-top:16px">Per rilassarti</h3>
+    <p class="note">Dopo l'allenamento, prima di dormire, o quando sei molto in ansia.</p>
+    <a class="breath" href="https://bit.ly/RESPIRAZIONEPROFONDA" target="_blank" rel="noopener">
+      Respirazione profonda <span>Scarica la tensione dopo lo sforzo</span></a>
+    <a class="breath" href="https://bit.ly/LACOLLINA" target="_blank" rel="noopener">
+      La collina <span>Visualizzazione guidata per calmarti</span></a>
+
+    <h3 style="color:var(--blu);margin-top:20px">Per concentrarti</h3>
+    <p class="note">Prima dell'allenamento o di una gara, per togliere i pensieri di troppo.</p>
+    <a class="breath b2" href="https://bit.ly/MANTIENIFOCUS" target="_blank" rel="noopener">
+      Mantieni il focus <span>Riporta l'attenzione sul momento</span></a>
+    <a class="breath b2" href="https://bit.ly/RESPIRAZIONEQUADRATA" target="_blank" rel="noopener">
+      Respirazione quadrata <span>Quattro tempi uguali: semplice ed efficace</span></a>
+
+    <h3 style="color:var(--terra);margin-top:20px">Per caricarti</h3>
+    <p class="note">Quando ti senti spento e devi tirare fuori energia.</p>
+    <a class="breath b3" href="https://bit.ly/ENERGIAPOSITIVA1" target="_blank" rel="noopener">
+      Energia positiva <span>Attiva prima di entrare in campo</span></a>
+
+    <p class="note" style="margin-top:18px">Se non si apre, copia il link nel browser. Serve la connessione a internet.</p>
+  </section>
+
 </div>
 
-<script>
-/* ============================================================
-   1) CONFIGURAZIONE — da compilare
-   ============================================================ */
-const SUPABASE_URL  = "";   // es. https://abcdxyz.supabase.co
-const SUPABASE_KEY  = "";   // chiave "anon public"
-const ADMIN_PIN     = "2027";       // PIN preparatori per rimuovere un'iscrizione
+<nav>
+  <button data-tab="isc" class="on">ISCRIZIONI</button>
+  <button data-tab="reg">REGOLE</button>
+  <button data-tab="cibo">CIBO</button>
+  <button data-tab="resp">RESPIRO</button>
+</nav>
 
-// Elenco atleti: sostituisci con i nomi reali (nome + iniziale del cognome)
+<script>
+/* ===== 1) CONFIGURAZIONE ===== */
+const SUPABASE_URL = "";
+const SUPABASE_KEY = "";
+const ADMIN_PIN    = "2027";
+
 const ATLETI = [
-  "Atleta 1","Atleta 2","Atleta 3","Atleta 4","Atleta 5",
-  "Atleta 6","Atleta 7","Atleta 8","Atleta 9","Atleta 10"
+  "Bray Gabriele",
+  "Falsirolli Gabriele",
+  "Falsirolli Giovanni",
+  "Grisi Paolo",
+  "Marchi Emilie",
+  "Marchi Luca",
+  "Margiotta Gabriele",
+  "Margotto Cristiano",
+  "Ottinetti Giovanni",
+  "Ribama Leonardo",
+  "Vicentini Edoardo"
 ];
 
-// Posti titolari per modulo
+const MINUTI_ANNULLO = 15;
 const POSTI = { "FORZA":5, "VELOCITÀ":8, "RESISTENZA":8, "CALCETTONE":10 };
 const MAX_RISERVE = 10;
-
-// Lunedì di riferimento della settimana A (come nell'app dei preparatori)
 const DEFAULT_ANCHOR = "2026-10-05";
 
-/* ============================================================
-   2) DATI FISSI
-   ============================================================ */
+/* ===== 2) DATI FISSI ===== */
 const DAYS  = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì"];
 const SLOTS = ["15:30 – 16:30","16:30 – 17:30","17:30 – 18:30"];
 const PLUS  = {
@@ -116,166 +281,184 @@ const PLUS  = {
   4:["VELOCITÀ","RESISTENZA","CALCETTONE"]
 };
 const THEMES = ["VELOCITÀ","FORZA","COORDINAZIONE / RITMO","RESISTENZA","GIOCHI"];
-const GRID = {A:[0,1,2,3,4],B:[2,3,4,0,1],C:[4,0,1,2,3],D:[1,2,3,4,0],E:[3,4,0,1,2]};
-const WEEKS = ["A","B","C","D","E"];
+const GRID   = {A:[0,1,2,3,4],B:[2,3,4,0,1],C:[4,0,1,2,3],D:[1,2,3,4,0],E:[3,4,0,1,2]};
+const WEEKS  = ["A","B","C","D","E"];
 
-/* ============================================================
-   3) SETTIMANA
-   ============================================================ */
+/* ===== 3) SETTIMANA ===== */
 function mondayOf(d){
   const x=new Date(d.getFullYear(),d.getMonth(),d.getDate());
   x.setDate(x.getDate()-((x.getDay()+6)%7)); return x;
 }
-function iso(d){ return d.toISOString().slice(0,10); }
-const THIS_MONDAY = mondayOf(new Date());
-const WEEK_KEY = iso(THIS_MONDAY);
+const iso=d=>d.toISOString().slice(0,10);
+const THIS_MONDAY=mondayOf(new Date());
+const WEEK_KEY=iso(THIS_MONDAY);
 function weekLetter(){
-  const anchor=mondayOf(new Date(DEFAULT_ANCHOR+"T12:00:00"));
-  const diff=Math.round((THIS_MONDAY-anchor)/(7*24*3600*1000));
+  const a=mondayOf(new Date(DEFAULT_ANCHOR+"T12:00:00"));
+  const diff=Math.round((THIS_MONDAY-a)/(7*24*3600*1000));
   return WEEKS[((diff%5)+5)%5];
 }
 function todayIdx(){ const d=(new Date().getDay()+6)%7; return d<=4?d:null; }
-
 const fmt=new Intl.DateTimeFormat("it-IT",{day:"numeric",month:"long"});
-const dateOf=i=>{ const d=new Date(THIS_MONDAY); d.setDate(d.getDate()+i); return d; };
+const dateOf=i=>{const d=new Date(THIS_MONDAY); d.setDate(d.getDate()+i); return d;};
 
 document.getElementById("sub").textContent =
   "Settimana "+weekLetter()+" · dal "+fmt.format(THIS_MONDAY)+" al "+fmt.format(dateOf(4));
-const t0=todayIdx();
-document.getElementById("weekTitle").textContent =
-  t0===null ? "Questa settimana" : "Oggi è "+DAYS[t0]+" · tema del giorno: "+THEMES[GRID[weekLetter()][t0]];
 
-/* ============================================================
-   4) SUPABASE (REST)
-   ============================================================ */
+(function(){
+  const t=todayIdx(), wk=weekLetter();
+  const el=document.getElementById("tema");
+  if(t===null){
+    el.innerHTML = '<div class="lab">WEEKEND</div><div class="big">Nessun allenamento</div>'+
+      '<div class="small">Si riparte lunedì con il tema '+THEMES[GRID[wk][0]]+'.</div>';
+  } else {
+    el.innerHTML = '<div class="lab">OGGI IN ATLETICA NORMALE</div>'+
+      '<div class="big">'+THEMES[GRID[wk][t]]+'</div>'+
+      '<div class="small">Se non fai il Plus, questo è il lavoro della giornata sul campo 8.</div>';
+  }
+})();
+
+/* ===== 4) SUPABASE ===== */
 const CONFIGURED = SUPABASE_URL && SUPABASE_KEY;
-const API = SUPABASE_URL + "/rest/v1/iscrizioni";
-const HEAD = {
-  "apikey": SUPABASE_KEY,
-  "Authorization": "Bearer " + SUPABASE_KEY,
-  "Content-Type": "application/json"
-};
+const API  = SUPABASE_URL + "/rest/v1/iscrizioni";
+const HEAD = {"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"};
 
 async function loadIscrizioni(){
-  const url = API + "?week_key=eq." + WEEK_KEY + "&select=*&order=created_at.asc";
-  const r = await fetch(url, {headers: HEAD});
+  const r=await fetch(API+"?week_key=eq."+WEEK_KEY+"&select=*&order=created_at.asc",{headers:HEAD});
   if(!r.ok) throw new Error("Lettura non riuscita ("+r.status+")");
   return await r.json();
 }
-async function iscrivi(day, slot, nome){
-  const r = await fetch(API, {
-    method:"POST",
-    headers:{...HEAD, "Prefer":"return=representation"},
-    body: JSON.stringify([{week_key:WEEK_KEY, day, slot, nome}])
-  });
+async function iscrivi(day,slot,nome){
+  const r=await fetch(API,{method:"POST",headers:Object.assign({},HEAD,{"Prefer":"return=representation"}),
+    body:JSON.stringify([{week_key:WEEK_KEY,day:day,slot:slot,nome:nome}])});
   if(r.status===409) throw new Error("Sei già iscritto a questa sessione.");
   if(!r.ok) throw new Error("Iscrizione non riuscita ("+r.status+")");
   return await r.json();
 }
-async function rimuovi(id){
-  const r = await fetch(API+"?id=eq."+id, {method:"DELETE", headers:{...HEAD, "Prefer":"return=minimal"}});
-  if(!r.ok) throw new Error("Rimozione non riuscita ("+r.status+"). Serve la chiave service_role.");
+async function rimuoviAdmin(id){
+  const r=await fetch(SUPABASE_URL+"/rest/v1/rpc/elimina_iscrizione",{method:"POST",headers:HEAD,
+    body:JSON.stringify({p_id:id,p_pin:ADMIN_PIN})});
+  if(!r.ok){ const t=await r.text();
+    throw new Error(t.indexOf("PIN")>=0?"PIN non valido sul database.":"Rimozione non riuscita."); }
+}
+async function annullaMia(id,nome){
+  const r=await fetch(SUPABASE_URL+"/rest/v1/rpc/annulla_iscrizione",{method:"POST",headers:HEAD,
+    body:JSON.stringify({p_id:id,p_nome:nome})});
+  if(!r.ok) throw new Error("Annullamento non riuscito.");
+  const ok=await r.json();
+  if(ok===false) throw new Error("Sono passati più di "+MINUTI_ANNULLO+" minuti: chiedi a un preparatore.");
 }
 
-/* ============================================================
-   5) UI
-   ============================================================ */
+/* ===== 5) UI ===== */
 let DATA=[], adminMode=false;
-const $=id=>document.getElementById(id);
+const $=function(id){ return document.getElementById(id); };
 
 const sel=$("atleta");
-ATLETI.forEach(n=>{ const o=document.createElement("option"); o.value=n; o.textContent=n; sel.appendChild(o); });
-sel.value = localStorage.getItem("atleta") || "";
-sel.onchange = ()=>{ localStorage.setItem("atleta", sel.value); render(); };
+ATLETI.forEach(function(n){ const o=document.createElement("option"); o.value=n; o.textContent=n; sel.appendChild(o); });
+sel.value=localStorage.getItem("atleta")||"";
+sel.onchange=function(){ localStorage.setItem("atleta",sel.value); render(); };
 
-function setMsg(text, cls){
-  $("msg").innerHTML = text ? `<div class="msg ${cls}">${text}</div>` : "";
-  if(text) setTimeout(()=>{ $("msg").innerHTML=""; }, 5000);
+function setMsg(t,c){
+  $("msg").innerHTML = t ? '<div class="msg '+c+'">'+t+'</div>' : "";
+  if(t) setTimeout(function(){ $("msg").innerHTML=""; },5000);
+}
+function recente(x){ return (Date.now()-new Date(x.created_at).getTime())<MINUTI_ANNULLO*60000; }
+function riga(x,me,extra){
+  const mio = x.nome===me;
+  let b="";
+  if(adminMode) b=' <button data-del="'+x.id+'" class="xbtn">✕</button>';
+  else if(mio&&recente(x)) b=' <button data-undo="'+x.id+'" class="xbtn">annulla</button>';
+  return '<li class="'+(extra||"")+(mio?" me":"")+'">'+x.nome+b+'</li>';
 }
 
 function render(){
   if(!CONFIGURED){
-    $("setup").innerHTML = `<div class="setup">
-      <b>App non ancora collegata al database.</b><br>
-      Inserisci <code>SUPABASE_URL</code> e <code>SUPABASE_KEY</code> in cima a <code>index.html</code>.
-      Le istruzioni sono nel README.</div>`;
+    $("setup").innerHTML='<div class="setup"><b>App non ancora collegata al database.</b><br>'+
+      'Inserisci <code>SUPABASE_URL</code> e <code>SUPABASE_KEY</code> in cima a <code>index.html</code>. '+
+      'Le istruzioni sono nel README.</div>';
     return;
   }
-  const me = sel.value;
-  const today = todayIdx();
+  const me=sel.value, today=todayIdx();
   let h="";
-  DAYS.forEach((dn,di)=>{
-    h += `<div class="day ${di===today?"today":""}">
-      <div class="dayhead"><span>${dn} ${fmt.format(dateOf(di))}</span>${di===today?"<span>OGGI</span>":""}</div>`;
-    PLUS[di].forEach((mod,si)=>{
-      const cap = POSTI[mod] || 8;
-      const lista = DATA.filter(x=>x.day===di && x.slot===si);
-      const tit = lista.slice(0,cap), ris = lista.slice(cap, cap+MAX_RISERVE);
-      const iscritto = lista.some(x=>x.nome===me);
-      const pieno = tit.length>=cap;
-      const risPieno = ris.length>=MAX_RISERVE;
-      h += `<div class="slot">
-        <div class="slothead">
-          <span class="time">${SLOTS[si]}</span>
-          <span class="mod ${mod==="CALCETTONE"?"cal":""}">${mod}</span>
-          <span class="cap">${tit.length}/${cap}${ris.length?" · "+ris.length+" ris.":""}</span>
-        </div>`;
-      h += `<ol class="lst">` + (tit.length
-        ? tit.map(x=>`<li class="${x.nome===me?"me":""}">${x.nome}${adminMode?` <button data-del="${x.id}" style="border:0;background:none;color:#C4553B;font-weight:800">✕</button>`:""}</li>`).join("")
-        : `<li style="list-style:none;margin-left:-22px;color:#7A7A7A">Nessun iscritto</li>`) + `</ol>`;
-      if(ris.length){
-        h += `<div class="resbox"><b>RISERVE</b><ol class="lst">` +
-          ris.map(x=>`<li class="res ${x.nome===me?"me":""}">${x.nome}${adminMode?` <button data-del="${x.id}" style="border:0;background:none;color:#C4553B;font-weight:800">✕</button>`:""}</li>`).join("") +
-          `</ol></div>`;
-      }
-      if(!me){
-        h += `<button class="btn" disabled>Scegli prima il tuo nome</button>`;
-      } else if(iscritto){
-        h += `<button class="btn" disabled>Sei iscritto ✓</button>`;
-      } else if(!pieno){
-        h += `<button class="btn" data-go="${di}-${si}">ISCRIVITI</button>`;
-      } else if(!risPieno){
-        h += `<button class="btn res" data-go="${di}-${si}">METTITI IN RISERVA (${ris.length+1}ª)</button>`;
-      } else {
-        h += `<button class="btn" disabled>Completo, riserve esaurite</button>`;
-      }
-      h += `</div>`;
+  DAYS.forEach(function(dn,di){
+    h+='<div class="day '+(di===today?"today":"")+'">'+
+       '<div class="dayhead"><span>'+dn+' '+fmt.format(dateOf(di))+'</span>'+
+       (di===today?'<span>OGGI</span>':'')+'</div>';
+    PLUS[di].forEach(function(mod,si){
+      const cap=POSTI[mod]||8;
+      const lista=DATA.filter(function(x){ return x.day===di&&x.slot===si; });
+      const tit=lista.slice(0,cap), ris=lista.slice(cap,cap+MAX_RISERVE);
+      const iscritto=lista.some(function(x){ return x.nome===me; });
+      const pieno=tit.length>=cap, risPieno=ris.length>=MAX_RISERVE;
+      h+='<div class="slot"><div class="slothead">'+
+         '<span class="time">'+SLOTS[si]+'</span>'+
+         '<span class="mod '+(mod==="CALCETTONE"?"cal":"")+'">'+mod+'</span>'+
+         '<span class="cap">'+tit.length+'/'+cap+(ris.length?' · '+ris.length+' ris.':'')+'</span></div>';
+      h+='<ol class="lst">'+(tit.length
+          ? tit.map(function(x){ return riga(x,me); }).join("")
+          : '<li style="list-style:none;margin-left:-22px;color:#7A7A7A">Nessun iscritto</li>')+'</ol>';
+      if(ris.length) h+='<div class="resbox"><b>RISERVE</b><ol class="lst">'+
+          ris.map(function(x){ return riga(x,me,"res"); }).join("")+'</ol></div>';
+      if(!me) h+='<button class="btn" disabled>Scegli prima il tuo nome</button>';
+      else if(iscritto) h+='<button class="btn" disabled>Sei iscritto ✓</button>';
+      else if(!pieno) h+='<button class="btn" data-go="'+di+'-'+si+'">ISCRIVITI</button>';
+      else if(!risPieno) h+='<button class="btn res" data-go="'+di+'-'+si+'">METTITI IN RISERVA ('+(ris.length+1)+'ª)</button>';
+      else h+='<button class="btn" disabled>Completo, riserve esaurite</button>';
+      h+='</div>';
     });
-    h += `</div>`;
+    h+='</div>';
   });
-  $("days").innerHTML = h;
+  $("days").innerHTML=h;
 
-  document.querySelectorAll("[data-go]").forEach(b=>b.onclick=async()=>{
-    const [di,si]=b.dataset.go.split("-").map(Number);
-    b.disabled=true; b.textContent="Invio…";
-    try{
-      await iscrivi(di,si,sel.value);
-      DATA = await loadIscrizioni();
-      setMsg("Iscrizione registrata.","ok");
-    }catch(e){ setMsg(e.message,"err"); }
-    render();
+  document.querySelectorAll("[data-go]").forEach(function(b){
+    b.onclick=async function(){
+      const p=b.dataset.go.split("-");
+      b.disabled=true; b.textContent="Invio…";
+      try{ await iscrivi(Number(p[0]),Number(p[1]),sel.value); DATA=await loadIscrizioni(); setMsg("Iscrizione registrata.","ok"); }
+      catch(e){ setMsg(e.message,"err"); }
+      render();
+    };
   });
-  document.querySelectorAll("[data-del]").forEach(b=>b.onclick=async()=>{
-    if(!confirm("Rimuovere questa iscrizione?")) return;
-    try{ await rimuovi(b.dataset.del); DATA=await loadIscrizioni(); setMsg("Iscrizione rimossa.","ok"); }
-    catch(e){ setMsg(e.message,"err"); }
-    render();
+  document.querySelectorAll("[data-del]").forEach(function(b){
+    b.onclick=async function(){
+      if(!confirm("Rimuovere questa iscrizione?")) return;
+      try{ await rimuoviAdmin(b.dataset.del); DATA=await loadIscrizioni(); setMsg("Iscrizione rimossa.","ok"); }
+      catch(e){ setMsg(e.message,"err"); }
+      render();
+    };
+  });
+  document.querySelectorAll("[data-undo]").forEach(function(b){
+    b.onclick=async function(){
+      if(!confirm("Annullare la tua iscrizione?")) return;
+      try{ await annullaMia(b.dataset.undo,sel.value); DATA=await loadIscrizioni(); setMsg("Iscrizione annullata.","ok"); }
+      catch(e){ setMsg(e.message,"err"); }
+      render();
+    };
   });
 }
 
-$("adminBtn").onclick=()=>{
+$("adminBtn").onclick=function(){
   if(adminMode){ adminMode=false; $("adminBtn").textContent="Area preparatori"; render(); return; }
   const pin=prompt("PIN preparatori");
   if(pin===ADMIN_PIN){ adminMode=true; $("adminBtn").textContent="Esci dall'area preparatori"; render(); }
   else if(pin!==null) alert("PIN errato.");
 };
 
+document.querySelectorAll("nav button").forEach(function(b){
+  b.onclick=function(){
+    document.querySelectorAll("nav button").forEach(function(x){ x.classList.remove("on"); });
+    b.classList.add("on");
+    ["isc","reg","cibo","resp"].forEach(function(t){
+      document.getElementById("tab-"+t).classList.toggle("hidden", t!==b.dataset.tab);
+    });
+    window.scrollTo(0,0);
+  };
+});
+
 (async function start(){
   if(!CONFIGURED){ render(); return; }
-  try{ DATA = await loadIscrizioni(); }
-  catch(e){ setMsg(e.message,"err"); }
+  try{ DATA=await loadIscrizioni(); }catch(e){ setMsg(e.message,"err"); }
   render();
-  setInterval(async()=>{ try{ DATA=await loadIscrizioni(); render(); }catch(e){} }, 30000);
+  setInterval(async function(){ try{ DATA=await loadIscrizioni(); render(); }catch(e){} },30000);
 })();
 </script>
 </body>
