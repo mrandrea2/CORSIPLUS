@@ -11,7 +11,7 @@
         --lime:#9FD27F;--ink:#14261A;--line:#D6D0C2;--ok:#2E7D32;--warn:#B8860B;--blu:#2B5EA7}
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   body{margin:0;background:#F7F5EF;color:var(--ink);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding-bottom:86px}
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding-bottom:88px}
   .wrap{max-width:640px;margin:0 auto;padding:0 14px}
   header{background:var(--dark);color:#fff;padding:14px 0;border-bottom:4px solid var(--terra)}
   .brand{font-size:12px;letter-spacing:2px;color:var(--lime);font-weight:700}
@@ -23,10 +23,10 @@
   .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
   .note{font-size:13px;color:#4A5A50;font-style:italic}
 
-  .tema{background:var(--dark);color:#fff;border-radius:14px;padding:14px;margin-top:12px}
+  .tema{background:var(--dark);color:#fff;border-radius:14px;padding:16px;margin-top:12px}
   .tema .lab{font-size:12px;letter-spacing:1.5px;color:var(--lime);font-weight:700}
-  .tema .big{font-size:26px;font-weight:800;margin-top:2px}
-  .tema .small{font-size:13px;color:#CFE3D2;margin-top:6px}
+  .tema .big{font-size:27px;font-weight:800;margin-top:2px;line-height:1.15}
+  .tema .small{font-size:13px;color:#CFE3D2;margin-top:8px}
 
   .namebar{background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px;margin-top:12px}
   .namebar label{font-size:12px;font-weight:800;letter-spacing:1px;color:var(--dark)}
@@ -76,11 +76,12 @@
   nav{position:fixed;left:0;right:0;bottom:0;background:var(--dark);display:flex;
     padding-bottom:env(safe-area-inset-bottom)}
   nav button{flex:1;background:none;border:0;border-top:4px solid transparent;color:#8FB697;
-    padding:13px 2px;font-size:12px;font-weight:800;letter-spacing:.5px;cursor:pointer}
+    padding:12px 1px;font-size:9.5px;font-weight:800;cursor:pointer;white-space:nowrap;letter-spacing:0}
   nav button.on{color:#fff;border-top-color:var(--terra)}
   .hidden{display:none}
   .adminbar{margin-top:16px;font-size:13px}
   .adminbar button{background:none;border:0;color:#4A5A50;text-decoration:underline;font-size:13px;cursor:pointer}
+  @media (min-width:420px){ nav button{font-size:11px;padding:13px 2px} }
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -94,21 +95,31 @@
 
 <div class="wrap">
 
-  <section id="tab-isc">
+  <div id="setup"></div>
+
+  <div class="namebar">
+    <label for="atleta">CHI SEI</label>
+    <select id="atleta"><option value="">— scegli il tuo nome —</option></select>
+  </div>
+  <div id="msg"></div>
+
+  <!-- ============ OGGI ============ -->
+  <section id="tab-oggi">
     <div class="tema" id="tema"></div>
-    <div id="setup"></div>
-    <div class="namebar">
-      <label for="atleta">CHI SEI</label>
-      <select id="atleta"><option value="">— scegli il tuo nome —</option></select>
-    </div>
-    <div id="msg"></div>
-    <h2>Questa settimana</h2>
+    <h2 id="oggiTitolo">Corsi Plus di oggi</h2>
+    <div id="oggiBox"></div>
+  </section>
+
+  <!-- ============ SETTIMANA IN CORSO ============ -->
+  <section id="tab-sett" class="hidden">
+    <h2>Settimana in corso</h2>
     <div id="days"></div>
     <div class="adminbar"><button id="adminBtn">Area preparatori</button></div>
     <p class="note" style="margin-top:12px">Ci si iscrive solo per la settimana in corso. Il nome di un iscritto non può essere sovrascritto da nessuno.<br>
     Hai sbagliato? Puoi annullare la tua iscrizione entro 15 minuti. Dopo, chiedi a un preparatore.</p>
   </section>
 
+  <!-- ============ REGOLE ============ -->
   <section id="tab-reg" class="hidden">
     <h2>Cosa sono i Plus</h2>
     <div class="card">
@@ -123,7 +134,7 @@
         <li><b>15:30 · 16:30 · 17:30</b></li>
         <li>Ogni corso dura <b>un'ora</b></li>
       </ul>
-      <p class="note">I moduli cambiano orario ogni giorno: guarda la sezione Iscrizioni.</p>
+      <p class="note">I moduli cambiano orario ogni giorno: guarda la sezione Settimana in corso.</p>
     </div>
 
     <h2>Cosa devi fare</h2>
@@ -155,6 +166,7 @@
     </div>
   </section>
 
+  <!-- ============ ALIMENTAZIONE ============ -->
   <section id="tab-cibo" class="hidden">
     <h2>Merenda prima dell'allenamento</h2>
     <div class="card">
@@ -210,6 +222,7 @@
     <p class="note">Sono indicazioni generali. Se hai allergie, intolleranze o esigenze particolari, parlane con i tuoi genitori e con il tuo medico.</p>
   </section>
 
+  <!-- ============ RESPIRAZIONI ============ -->
   <section id="tab-resp" class="hidden">
     <h2>Respirazioni guidate</h2>
     <p class="note" style="margin-bottom:12px">Tocca un esercizio e segui la voce. Bastano pochi minuti e si possono fare ovunque.</p>
@@ -239,10 +252,11 @@
 </div>
 
 <nav>
-  <button data-tab="isc" class="on">ISCRIZIONI</button>
+  <button data-tab="oggi" class="on">OGGI</button>
+  <button data-tab="sett">SETTIMANA</button>
   <button data-tab="reg">REGOLE</button>
-  <button data-tab="cibo">CIBO</button>
-  <button data-tab="resp">RESPIRO</button>
+  <button data-tab="cibo">ALIMENTAZIONE</button>
+  <button data-tab="resp">RESPIRAZIONI</button>
 </nav>
 
 <script>
@@ -263,6 +277,14 @@ const ATLETI = [
   "Ottinetti Giovanni",
   "Ribama Leonardo",
   "Vicentini Edoardo"
+];
+
+const PREPARATORI = [
+  "Bertelli Andrea",
+  "Bogoni Giacomo",
+  "Boscaini Silvia",
+  "Critelli Patrizia",
+  "Sottini Matteo"
 ];
 
 const MINUTI_ANNULLO = 15;
@@ -299,23 +321,11 @@ function weekLetter(){
 }
 function todayIdx(){ const d=(new Date().getDay()+6)%7; return d<=4?d:null; }
 const fmt=new Intl.DateTimeFormat("it-IT",{day:"numeric",month:"long"});
+const fmtLong=new Intl.DateTimeFormat("it-IT",{weekday:"long",day:"numeric",month:"long"});
 const dateOf=i=>{const d=new Date(THIS_MONDAY); d.setDate(d.getDate()+i); return d;};
 
 document.getElementById("sub").textContent =
   "Settimana "+weekLetter()+" · dal "+fmt.format(THIS_MONDAY)+" al "+fmt.format(dateOf(4));
-
-(function(){
-  const t=todayIdx(), wk=weekLetter();
-  const el=document.getElementById("tema");
-  if(t===null){
-    el.innerHTML = '<div class="lab">WEEKEND</div><div class="big">Nessun allenamento</div>'+
-      '<div class="small">Si riparte lunedì con il tema '+THEMES[GRID[wk][0]]+'.</div>';
-  } else {
-    el.innerHTML = '<div class="lab">OGGI IN ATLETICA NORMALE</div>'+
-      '<div class="big">'+THEMES[GRID[wk][t]]+'</div>'+
-      '<div class="small">Se non fai il Plus, questo è il lavoro della giornata sul campo 8.</div>';
-  }
-})();
 
 /* ===== 4) SUPABASE ===== */
 const CONFIGURED = SUPABASE_URL && SUPABASE_KEY;
@@ -353,9 +363,15 @@ let DATA=[], adminMode=false;
 const $=function(id){ return document.getElementById(id); };
 
 const sel=$("atleta");
-ATLETI.forEach(function(n){ const o=document.createElement("option"); o.value=n; o.textContent=n; sel.appendChild(o); });
+function addGroup(label,arr){
+  const g=document.createElement("optgroup"); g.label=label;
+  arr.forEach(function(n){ const o=document.createElement("option"); o.value=n; o.textContent=n; g.appendChild(o); });
+  sel.appendChild(g);
+}
+addGroup("Atleti",ATLETI);
+addGroup("Preparatori",PREPARATORI);
 sel.value=localStorage.getItem("atleta")||"";
-sel.onchange=function(){ localStorage.setItem("atleta",sel.value); render(); };
+sel.onchange=function(){ localStorage.setItem("atleta",sel.value); renderAll(); };
 
 function setMsg(t,c){
   $("msg").innerHTML = t ? '<div class="msg '+c+'">'+t+'</div>' : "";
@@ -370,52 +386,75 @@ function riga(x,me,extra){
   return '<li class="'+(extra||"")+(mio?" me":"")+'">'+x.nome+b+'</li>';
 }
 
-function render(){
-  if(!CONFIGURED){
-    $("setup").innerHTML='<div class="setup"><b>App non ancora collegata al database.</b><br>'+
-      'Inserisci <code>SUPABASE_URL</code> e <code>SUPABASE_KEY</code> in cima a <code>index.html</code>. '+
-      'Le istruzioni sono nel README.</div>';
+/* un singolo slot */
+function slotHTML(di,si,mod,me){
+  const cap=POSTI[mod]||8;
+  const lista=DATA.filter(function(x){ return x.day===di&&x.slot===si; });
+  const tit=lista.slice(0,cap), ris=lista.slice(cap,cap+MAX_RISERVE);
+  const iscritto=lista.some(function(x){ return x.nome===me; });
+  const pieno=tit.length>=cap, risPieno=ris.length>=MAX_RISERVE;
+  let h='<div class="slot"><div class="slothead">'+
+    '<span class="time">'+SLOTS[si]+'</span>'+
+    '<span class="mod '+(mod==="CALCETTONE"?"cal":"")+'">'+mod+'</span>'+
+    '<span class="cap">'+tit.length+'/'+cap+(ris.length?' · '+ris.length+' ris.':'')+'</span></div>';
+  h+='<ol class="lst">'+(tit.length
+      ? tit.map(function(x){ return riga(x,me); }).join("")
+      : '<li style="list-style:none;margin-left:-22px;color:#7A7A7A">Nessun iscritto</li>')+'</ol>';
+  if(ris.length) h+='<div class="resbox"><b>RISERVE</b><ol class="lst">'+
+      ris.map(function(x){ return riga(x,me,"res"); }).join("")+'</ol></div>';
+  if(!me) h+='<button class="btn" disabled>Scegli prima il tuo nome</button>';
+  else if(iscritto) h+='<button class="btn" disabled>Sei iscritto ✓</button>';
+  else if(!pieno) h+='<button class="btn" data-go="'+di+'-'+si+'">ISCRIVITI</button>';
+  else if(!risPieno) h+='<button class="btn res" data-go="'+di+'-'+si+'">METTITI IN RISERVA ('+(ris.length+1)+'ª)</button>';
+  else h+='<button class="btn" disabled>Completo, riserve esaurite</button>';
+  return h+'</div>';
+}
+
+/* ---- sezione OGGI ---- */
+function renderOggi(){
+  const t=todayIdx(), wk=weekLetter(), me=sel.value;
+  const tema=$("tema");
+  if(t===null){
+    tema.innerHTML='<div class="lab">WEEKEND</div><div class="big">Nessun allenamento</div>'+
+      '<div class="small">Si riparte lunedì con il tema '+THEMES[GRID[wk][0]]+'.</div>';
+    $("oggiTitolo").textContent="Corsi Plus";
+    $("oggiBox").innerHTML='<div class="card"><p style="margin:0;font-size:15px">Oggi non ci sono corsi. '+
+      'Vai su <b>Settimana in corso</b> per iscriverti ai prossimi.</p></div>';
     return;
   }
+  tema.innerHTML='<div class="lab">'+fmtLong.format(new Date()).toUpperCase()+'</div>'+
+    '<div class="big">'+THEMES[GRID[wk][t]]+'</div>'+
+    '<div class="small">Se non fai il Plus, questo è il lavoro della giornata sul campo 8.</div>';
+  $("oggiTitolo").textContent="Corsi Plus di oggi";
+  if(!CONFIGURED){ $("oggiBox").innerHTML=""; return; }
+  let h='<div class="day today"><div class="dayhead"><span>'+DAYS[t]+' '+fmt.format(dateOf(t))+'</span><span>OGGI</span></div>';
+  PLUS[t].forEach(function(mod,si){ h+=slotHTML(t,si,mod,me); });
+  $("oggiBox").innerHTML=h+'</div>';
+}
+
+/* ---- sezione SETTIMANA ---- */
+function renderSettimana(){
+  if(!CONFIGURED) return;
   const me=sel.value, today=todayIdx();
   let h="";
   DAYS.forEach(function(dn,di){
     h+='<div class="day '+(di===today?"today":"")+'">'+
        '<div class="dayhead"><span>'+dn+' '+fmt.format(dateOf(di))+'</span>'+
        (di===today?'<span>OGGI</span>':'')+'</div>';
-    PLUS[di].forEach(function(mod,si){
-      const cap=POSTI[mod]||8;
-      const lista=DATA.filter(function(x){ return x.day===di&&x.slot===si; });
-      const tit=lista.slice(0,cap), ris=lista.slice(cap,cap+MAX_RISERVE);
-      const iscritto=lista.some(function(x){ return x.nome===me; });
-      const pieno=tit.length>=cap, risPieno=ris.length>=MAX_RISERVE;
-      h+='<div class="slot"><div class="slothead">'+
-         '<span class="time">'+SLOTS[si]+'</span>'+
-         '<span class="mod '+(mod==="CALCETTONE"?"cal":"")+'">'+mod+'</span>'+
-         '<span class="cap">'+tit.length+'/'+cap+(ris.length?' · '+ris.length+' ris.':'')+'</span></div>';
-      h+='<ol class="lst">'+(tit.length
-          ? tit.map(function(x){ return riga(x,me); }).join("")
-          : '<li style="list-style:none;margin-left:-22px;color:#7A7A7A">Nessun iscritto</li>')+'</ol>';
-      if(ris.length) h+='<div class="resbox"><b>RISERVE</b><ol class="lst">'+
-          ris.map(function(x){ return riga(x,me,"res"); }).join("")+'</ol></div>';
-      if(!me) h+='<button class="btn" disabled>Scegli prima il tuo nome</button>';
-      else if(iscritto) h+='<button class="btn" disabled>Sei iscritto ✓</button>';
-      else if(!pieno) h+='<button class="btn" data-go="'+di+'-'+si+'">ISCRIVITI</button>';
-      else if(!risPieno) h+='<button class="btn res" data-go="'+di+'-'+si+'">METTITI IN RISERVA ('+(ris.length+1)+'ª)</button>';
-      else h+='<button class="btn" disabled>Completo, riserve esaurite</button>';
-      h+='</div>';
-    });
+    PLUS[di].forEach(function(mod,si){ h+=slotHTML(di,si,mod,me); });
     h+='</div>';
   });
   $("days").innerHTML=h;
+}
 
+function bind(){
   document.querySelectorAll("[data-go]").forEach(function(b){
     b.onclick=async function(){
       const p=b.dataset.go.split("-");
       b.disabled=true; b.textContent="Invio…";
       try{ await iscrivi(Number(p[0]),Number(p[1]),sel.value); DATA=await loadIscrizioni(); setMsg("Iscrizione registrata.","ok"); }
       catch(e){ setMsg(e.message,"err"); }
-      render();
+      renderAll();
     };
   });
   document.querySelectorAll("[data-del]").forEach(function(b){
@@ -423,7 +462,7 @@ function render(){
       if(!confirm("Rimuovere questa iscrizione?")) return;
       try{ await rimuoviAdmin(b.dataset.del); DATA=await loadIscrizioni(); setMsg("Iscrizione rimossa.","ok"); }
       catch(e){ setMsg(e.message,"err"); }
-      render();
+      renderAll();
     };
   });
   document.querySelectorAll("[data-undo]").forEach(function(b){
@@ -431,15 +470,23 @@ function render(){
       if(!confirm("Annullare la tua iscrizione?")) return;
       try{ await annullaMia(b.dataset.undo,sel.value); DATA=await loadIscrizioni(); setMsg("Iscrizione annullata.","ok"); }
       catch(e){ setMsg(e.message,"err"); }
-      render();
+      renderAll();
     };
   });
 }
 
+function renderAll(){
+  if(!CONFIGURED){
+    $("setup").innerHTML='<div class="setup"><b>App non ancora collegata al database.</b><br>'+
+      'Inserisci <code>SUPABASE_URL</code> e <code>SUPABASE_KEY</code> in cima a <code>index.html</code>.</div>';
+  }
+  renderOggi(); renderSettimana(); bind();
+}
+
 $("adminBtn").onclick=function(){
-  if(adminMode){ adminMode=false; $("adminBtn").textContent="Area preparatori"; render(); return; }
+  if(adminMode){ adminMode=false; $("adminBtn").textContent="Area preparatori"; renderAll(); return; }
   const pin=prompt("PIN preparatori");
-  if(pin===ADMIN_PIN){ adminMode=true; $("adminBtn").textContent="Esci dall'area preparatori"; render(); }
+  if(pin===ADMIN_PIN){ adminMode=true; $("adminBtn").textContent="Esci dall'area preparatori"; renderAll(); }
   else if(pin!==null) alert("PIN errato.");
 };
 
@@ -447,7 +494,7 @@ document.querySelectorAll("nav button").forEach(function(b){
   b.onclick=function(){
     document.querySelectorAll("nav button").forEach(function(x){ x.classList.remove("on"); });
     b.classList.add("on");
-    ["isc","reg","cibo","resp"].forEach(function(t){
+    ["oggi","sett","reg","cibo","resp"].forEach(function(t){
       document.getElementById("tab-"+t).classList.toggle("hidden", t!==b.dataset.tab);
     });
     window.scrollTo(0,0);
@@ -455,10 +502,10 @@ document.querySelectorAll("nav button").forEach(function(b){
 });
 
 (async function start(){
-  if(!CONFIGURED){ render(); return; }
+  if(!CONFIGURED){ renderAll(); return; }
   try{ DATA=await loadIscrizioni(); }catch(e){ setMsg(e.message,"err"); }
-  render();
-  setInterval(async function(){ try{ DATA=await loadIscrizioni(); render(); }catch(e){} },30000);
+  renderAll();
+  setInterval(async function(){ try{ DATA=await loadIscrizioni(); renderAll(); }catch(e){} },30000);
 })();
 </script>
 </body>
