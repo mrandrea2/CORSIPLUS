@@ -79,6 +79,23 @@
     padding:12px 1px;font-size:9.5px;font-weight:800;cursor:pointer;white-space:nowrap;letter-spacing:0}
   nav button.on{color:#fff;border-top-color:var(--terra)}
   .hidden{display:none}
+  .hdrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .staffpill{background:var(--terra);color:#fff;border:0;border-radius:999px;
+    padding:9px 14px;font-weight:800;font-size:12px;letter-spacing:.5px;cursor:pointer;white-space:nowrap}
+  .staffpill.on{background:#fff;color:var(--terra)}
+  .sbox{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+  .sday{font-weight:800;font-size:17px;color:var(--dark);margin:16px 0 6px}
+  .sday.oggi{color:var(--terra)}
+  .srow{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-top:1px solid var(--line)}
+  .srow:first-child{border-top:0}
+  .srow .t{background:var(--dark);color:#fff;border-radius:6px;padding:3px 7px;font-size:12px;font-weight:800;white-space:nowrap}
+  .srow .m{font-weight:800;font-size:14px;min-width:92px}
+  .srow .n{font-size:14px;flex:1}
+  .srow .n .vuoto{color:#9A9A9A;font-style:italic}
+  .srow .n .ris{color:#7A6A3A}
+  .pin{background:var(--sand);border:2px solid var(--warn);border-radius:14px;padding:16px;text-align:center}
+  .pin input{width:160px;text-align:center;font-size:22px;letter-spacing:4px;padding:10px;
+    border:2px solid var(--line);border-radius:10px;margin-top:8px}
   .adminbar{margin-top:16px;font-size:13px}
   .adminbar button{background:none;border:0;color:#4A5A50;text-decoration:underline;font-size:13px;cursor:pointer}
   @media (min-width:420px){ nav button{font-size:11px;padding:13px 2px} }
@@ -88,9 +105,14 @@
 <body>
 
 <header><div class="wrap">
-  <div class="brand">CT SCALIGERO</div>
-  <h1>Corsi Plus</h1>
-  <div class="sub" id="sub"></div>
+  <div class="hdrow">
+    <div>
+      <div class="brand">CT SCALIGERO</div>
+      <h1>Corsi Plus</h1>
+      <div class="sub" id="sub"></div>
+    </div>
+    <button class="staffpill" id="staffBtn">AREA<br>PREPARATORI</button>
+  </div>
 </div></header>
 
 <div class="wrap">
@@ -114,9 +136,14 @@
   <section id="tab-sett" class="hidden">
     <h2>Settimana in corso</h2>
     <div id="days"></div>
-    <div class="adminbar"><button id="adminBtn">Area preparatori</button></div>
     <p class="note" style="margin-top:12px">Ci si iscrive solo per la settimana in corso. Il nome di un iscritto non può essere sovrascritto da nessuno.<br>
     Hai sbagliato? Puoi annullare la tua iscrizione entro 15 minuti. Dopo, chiedi a un preparatore.</p>
+  </section>
+
+  <!-- ============ AREA PREPARATORI ============ -->
+  <section id="tab-staff" class="hidden">
+    <div id="pinBox"></div>
+    <div id="staffBox"></div>
   </section>
 
   <!-- ============ REGOLE ============ -->
@@ -481,19 +508,91 @@ function renderAll(){
       'Inserisci <code>SUPABASE_URL</code> e <code>SUPABASE_KEY</code> in cima a <code>index.html</code>.</div>';
   }
   renderOggi(); renderSettimana(); bind();
+  if(!$("tab-staff").classList.contains("hidden")) renderStaff();
 }
 
-$("adminBtn").onclick=function(){
-  if(adminMode){ adminMode=false; $("adminBtn").textContent="Area preparatori"; renderAll(); return; }
-  const pin=prompt("PIN preparatori");
-  if(pin===ADMIN_PIN){ adminMode=true; $("adminBtn").textContent="Esci dall'area preparatori"; renderAll(); }
-  else if(pin!==null) alert("PIN errato.");
-};
+/* ---- AREA PREPARATORI ---- */
+function nomi(lista){
+  return lista.length ? lista.map(function(x){ return x.nome; }).join(", ")
+                      : '<span class="vuoto">nessuno</span>';
+}
+function renderStaff(){
+  if(!adminMode){
+    $("pinBox").innerHTML='<div class="pin"><b style="font-size:16px">Area riservata ai preparatori</b>'+
+      '<div class="note" style="margin:6px 0 0">Inserisci il PIN per vedere il riepilogo e rimuovere le iscrizioni.</div>'+
+      '<input id="pinIn" type="password" inputmode="numeric" placeholder="PIN">'+
+      '<button class="btn" id="pinGo" style="max-width:200px;margin:10px auto 0;display:block">ENTRA</button></div>';
+    $("staffBox").innerHTML="";
+    $("pinIn").onkeydown=function(e){ if(e.key==="Enter") $("pinGo").click(); };
+    $("pinGo").onclick=function(){
+      if($("pinIn").value===ADMIN_PIN){ adminMode=true; renderAll(); }
+      else { $("pinIn").value=""; setMsg("PIN errato.","err"); }
+    };
+    return;
+  }
+  $("pinBox").innerHTML='<div class="sbox" style="display:flex;justify-content:space-between;align-items:center;gap:10px">'+
+    '<b style="color:var(--ok)">Modalità preparatore attiva</b>'+
+    '<button class="xbtn" id="pinOut">esci</button></div>'+
+    '<p class="note">Nelle sezioni Oggi e Settimana compare la ✕ accanto a ogni nome per rimuovere un\'iscrizione.</p>';
+  $("pinOut").onclick=function(){ adminMode=false; renderAll(); };
+
+  const today=todayIdx();
+  let h="", tot=0;
+  DAYS.forEach(function(dn,di){
+    h+='<div class="sday '+(di===today?"oggi":"")+'">'+dn+' '+fmt.format(dateOf(di))+
+       (di===today?' · OGGI':'')+'</div><div class="sbox">';
+    PLUS[di].forEach(function(mod,si){
+      const cap=POSTI[mod]||8;
+      const lista=DATA.filter(function(x){ return x.day===di&&x.slot===si; });
+      const tit=lista.slice(0,cap), ris=lista.slice(cap,cap+MAX_RISERVE);
+      tot+=tit.length;
+      h+='<div class="srow"><span class="t">'+SLOTS[si].split(" ")[0]+'</span>'+
+         '<span class="m">'+mod+'<br><span style="font-weight:500;font-size:12px;color:#4A5A50">'+
+         tit.length+'/'+cap+'</span></span><span class="n">'+nomi(tit)+
+         (ris.length?'<br><span class="ris">ris: '+nomi(ris)+'</span>':'')+'</span></div>';
+    });
+    h+='</div>';
+  });
+  $("staffBox").innerHTML='<div class="sbox" style="background:var(--dark);color:#fff;border-color:var(--dark)">'+
+    '<b style="font-size:16px">'+tot+' iscrizioni</b> <span style="color:#CFE3D2;font-size:14px">nella settimana '+
+    weekLetter()+'</span></div>'+h+
+    '<button class="btn" id="copiaBtn" style="margin-top:14px">COPIA IL RIEPILOGO</button>';
+
+  $("copiaBtn").onclick=function(){
+    let t="CORSI PLUS · settimana "+weekLetter()+"\n";
+    DAYS.forEach(function(dn,di){
+      t+="\n"+dn.toUpperCase()+" "+fmt.format(dateOf(di))+"\n";
+      PLUS[di].forEach(function(mod,si){
+        const cap=POSTI[mod]||8;
+        const lista=DATA.filter(function(x){ return x.day===di&&x.slot===si; });
+        const tit=lista.slice(0,cap), ris=lista.slice(cap,cap+MAX_RISERVE);
+        t+=SLOTS[si].split(" ")[0]+" "+mod+" ("+tit.length+"/"+cap+"): "+
+           (tit.length?tit.map(function(x){return x.nome;}).join(", "):"-")+"\n";
+        if(ris.length) t+="   riserve: "+ris.map(function(x){return x.nome;}).join(", ")+"\n";
+      });
+    });
+    if(navigator.clipboard){ navigator.clipboard.writeText(t); setMsg("Riepilogo copiato.","ok"); }
+    else setMsg("Copia non disponibile su questo browser.","err");
+  };
+}
+
+function apriStaff(){
+  document.querySelectorAll("nav button").forEach(function(x){ x.classList.remove("on"); });
+  ["oggi","sett","reg","cibo","resp"].forEach(function(t){
+    document.getElementById("tab-"+t).classList.add("hidden"); });
+  $("tab-staff").classList.remove("hidden");
+  $("staffBtn").classList.add("on");
+  window.scrollTo(0,0);
+  renderStaff();
+}
+$("staffBtn").onclick=apriStaff;
 
 document.querySelectorAll("nav button").forEach(function(b){
   b.onclick=function(){
     document.querySelectorAll("nav button").forEach(function(x){ x.classList.remove("on"); });
     b.classList.add("on");
+    $("tab-staff").classList.add("hidden");
+    $("staffBtn").classList.remove("on");
     ["oggi","sett","reg","cibo","resp"].forEach(function(t){
       document.getElementById("tab-"+t).classList.toggle("hidden", t!==b.dataset.tab);
     });
