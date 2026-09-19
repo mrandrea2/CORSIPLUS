@@ -93,6 +93,27 @@
   .srow .n{font-size:14px;flex:1}
   .srow .n .vuoto{color:#9A9A9A;font-style:italic}
   .srow .n .ris{color:#7A6A3A}
+  .subtabs{display:flex;gap:8px;margin:12px 0 4px}
+  .subtabs button{flex:1;padding:11px 6px;border:2px solid var(--line);background:#fff;color:var(--ink);
+    border-radius:10px;font-weight:800;font-size:13px;cursor:pointer}
+  .subtabs button.on{background:var(--dark);border-color:var(--dark);color:#fff}
+  .atl{margin-bottom:12px}
+  .atl .top{display:flex;justify-content:space-between;align-items:baseline;font-size:14px}
+  .atl .nm{font-weight:800}
+  .atl .tot{font-weight:800;color:var(--dark)}
+  .bar{display:flex;height:20px;border-radius:6px;overflow:hidden;background:#EEE;margin-top:4px}
+  .bar i{display:block;height:100%}
+  .seg-FORZA{background:#0E3A1C}
+  .seg-VELOCITA{background:#C4553B}
+  .seg-RESISTENZA{background:#2B5EA7}
+  .seg-CALCETTONE{background:#B8860B}
+  .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;margin:6px 0 14px}
+  .legend span{display:flex;align-items:center;gap:5px}
+  .legend i{width:13px;height:13px;border-radius:3px;display:inline-block}
+  .kpi{display:flex;gap:8px;margin-bottom:12px}
+  .kpi div{flex:1;background:var(--dark);color:#fff;border-radius:12px;padding:12px;text-align:center}
+  .kpi b{display:block;font-size:24px}
+  .kpi span{font-size:11px;color:#CFE3D2;letter-spacing:.5px}
   .pin{background:var(--sand);border:2px solid var(--warn);border-radius:14px;padding:16px;text-align:center}
   .pin input{width:160px;text-align:center;font-size:22px;letter-spacing:4px;padding:10px;
     border:2px solid var(--line);border-radius:10px;margin-top:8px}
@@ -143,6 +164,7 @@
   <!-- ============ AREA PREPARATORI ============ -->
   <section id="tab-staff" class="hidden">
     <div id="pinBox"></div>
+    <div id="subtabs"></div>
     <div id="staffBox"></div>
   </section>
 
@@ -522,7 +544,7 @@ function renderStaff(){
       '<div class="note" style="margin:6px 0 0">Inserisci il PIN per vedere il riepilogo e rimuovere le iscrizioni.</div>'+
       '<input id="pinIn" type="password" inputmode="numeric" placeholder="PIN">'+
       '<button class="btn" id="pinGo" style="max-width:200px;margin:10px auto 0;display:block">ENTRA</button></div>';
-    $("staffBox").innerHTML="";
+    $("staffBox").innerHTML=""; $("subtabs").innerHTML="";
     $("pinIn").onkeydown=function(e){ if(e.key==="Enter") $("pinGo").click(); };
     $("pinGo").onclick=function(){
       if($("pinIn").value===ADMIN_PIN){ adminMode=true; renderAll(); }
@@ -534,7 +556,9 @@ function renderStaff(){
     '<b style="color:var(--ok)">Modalità preparatore attiva</b>'+
     '<button class="xbtn" id="pinOut">esci</button></div>'+
     '<p class="note">Nelle sezioni Oggi e Settimana compare la ✕ accanto a ogni nome per rimuovere un\'iscrizione.</p>';
-  $("pinOut").onclick=function(){ adminMode=false; renderAll(); };
+  $("pinOut").onclick=function(){ adminMode=false; staffView="settimana"; renderAll(); };
+  renderSubtabs();
+  if(staffView==="storico"){ renderStorico(); return; }
 
   const today=todayIdx();
   let h="", tot=0;
@@ -574,6 +598,103 @@ function renderStaff(){
     if(navigator.clipboard){ navigator.clipboard.writeText(t); setMsg("Riepilogo copiato.","ok"); }
     else setMsg("Copia non disponibile su questo browser.","err");
   };
+}
+
+/* ---- STORICO ---- */
+let STORICO=null, staffView="settimana";
+
+async function loadStorico(){
+  const r=await fetch(API+"?select=*&order=created_at.asc",{headers:HEAD});
+  if(!r.ok) throw new Error("Storico non disponibile ("+r.status+")");
+  return await r.json();
+}
+/* conta solo le iscrizioni entrate come titolari */
+function calcolaPresenze(rows){
+  const gruppi={};
+  rows.forEach(function(x){
+    const k=x.week_key+"|"+x.day+"|"+x.slot;
+    (gruppi[k]=gruppi[k]||[]).push(x);
+  });
+  const per={}, moduli={}, settimane={};
+  Object.keys(gruppi).forEach(function(k){
+    const parti=k.split("|"), di=Number(parti[1]), si=Number(parti[2]);
+    const mod=(PLUS[di]||[])[si]; if(!mod) return;
+    const cap=POSTI[mod]||8;
+    settimane[parti[0]]=true;
+    gruppi[k].slice(0,cap).forEach(function(x){
+      per[x.nome]=per[x.nome]||{tot:0};
+      per[x.nome][mod]=(per[x.nome][mod]||0)+1;
+      per[x.nome].tot++;
+      moduli[mod]=(moduli[mod]||0)+1;
+    });
+  });
+  return {per:per, moduli:moduli, settimane:Object.keys(settimane).length};
+}
+const MODS=["FORZA","VELOCITÀ","RESISTENZA","CALCETTONE"];
+const cls=function(m){ return "seg-"+m.replace("À","A"); };
+
+function renderStorico(){
+  const box=$("staffBox");
+  if(STORICO===null){ box.innerHTML='<div class="sbox">Carico lo storico…</div>'; return; }
+  if(!STORICO.length){ box.innerHTML='<div class="sbox">Ancora nessuna iscrizione registrata.</div>'; return; }
+
+  const R=calcolaPresenze(STORICO);
+  const nomi=Object.keys(R.per).sort(function(a,b){ return R.per[b].tot-R.per[a].tot; });
+  const totale=nomi.reduce(function(s,n){ return s+R.per[n].tot; },0);
+  const max=nomi.length?R.per[nomi[0]].tot:1;
+
+  let h='<div class="kpi"><div><b>'+totale+'</b><span>PRESENZE</span></div>'+
+        '<div><b>'+nomi.length+'</b><span>ATLETI</span></div>'+
+        '<div><b>'+R.settimane+'</b><span>SETTIMANE</span></div></div>';
+
+  h+='<div class="legend">'+MODS.map(function(m){
+      return '<span><i class="'+cls(m)+'"></i>'+m+' ('+(R.moduli[m]||0)+')</span>'; }).join("")+'</div>';
+
+  h+='<div class="sbox">';
+  nomi.forEach(function(n){
+    const d=R.per[n];
+    h+='<div class="atl"><div class="top"><span class="nm">'+n+'</span>'+
+       '<span class="tot">'+d.tot+'</span></div><div class="bar">';
+    MODS.forEach(function(m){
+      if(d[m]) h+='<i class="'+cls(m)+'" style="width:'+(d[m]/max*100)+'%" title="'+m+' '+d[m]+'"></i>';
+    });
+    h+='</div><div style="font-size:12px;color:#4A5A50;margin-top:3px">'+
+       MODS.filter(function(m){return d[m];}).map(function(m){ return m.toLowerCase()+' '+d[m]; }).join(" · ")+
+       '</div></div>';
+  });
+  h+='</div>';
+  h+='<button class="btn" id="csvBtn" style="margin-top:12px">ESPORTA IN CSV</button>';
+  h+='<p class="note">Sono contate le presenze da titolare. Le riserve non entrano nel conteggio.</p>';
+  box.innerHTML=h;
+
+  $("csvBtn").onclick=function(){
+    let t="Atleta;Totale;"+MODS.join(";")+"\n";
+    nomi.forEach(function(n){
+      const d=R.per[n];
+      t+=n+";"+d.tot+";"+MODS.map(function(m){ return d[m]||0; }).join(";")+"\n";
+    });
+    if(navigator.clipboard){ navigator.clipboard.writeText(t); setMsg("Tabella copiata: incollala in Excel.","ok"); }
+    else setMsg("Copia non disponibile su questo browser.","err");
+  };
+}
+
+function renderSubtabs(){
+  if(!adminMode){ $("subtabs").innerHTML=""; return; }
+  $("subtabs").innerHTML='<div class="subtabs">'+
+    '<button data-v="settimana" class="'+(staffView==="settimana"?"on":"")+'">SETTIMANA</button>'+
+    '<button data-v="storico" class="'+(staffView==="storico"?"on":"")+'">STORICO</button></div>';
+  document.querySelectorAll("#subtabs button").forEach(function(b){
+    b.onclick=async function(){
+      staffView=b.dataset.v; renderSubtabs();
+      if(staffView==="storico"){
+        renderStorico();
+        if(STORICO===null){
+          try{ STORICO=await loadStorico(); }catch(e){ STORICO=[]; setMsg(e.message,"err"); }
+        }
+        renderStorico();
+      } else renderStaff();
+    };
+  });
 }
 
 function apriStaff(){
