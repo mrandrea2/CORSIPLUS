@@ -155,9 +155,9 @@
 
   <!-- ============ SETTIMANA IN CORSO ============ -->
   <section id="tab-sett" class="hidden">
-    <h2>Settimana in corso</h2>
+    <h2 id="settTitolo">Settimana in corso</h2>
     <div id="days"></div>
-    <p class="note" style="margin-top:12px">Ci si iscrive solo per la settimana in corso. Il nome di un iscritto non può essere sovrascritto da nessuno.<br>
+    <p class="note" style="margin-top:12px">Ci si iscrive una settimana alla volta: dal sabato si aprono le iscrizioni per la settimana successiva. Il nome di un iscritto non può essere sovrascritto da nessuno.<br>
     Hai sbagliato? Puoi annullare la tua iscrizione entro 15 minuti. Dopo, chiedi a un preparatore.</p>
   </section>
 
@@ -406,7 +406,9 @@ function mondayOf(d){
   x.setDate(x.getDate()-((x.getDay()+6)%7)); return x;
 }
 const iso=d=>d.toISOString().slice(0,10);
-const THIS_MONDAY=mondayOf(new Date());
+// Sabato e domenica la settimana di riferimento diventa la prossima: le iscrizioni si aprono in anticipo.
+const IS_WEEKEND=((new Date().getDay()+6)%7)>=5;
+const THIS_MONDAY=(function(){ const m=mondayOf(new Date()); if(IS_WEEKEND) m.setDate(m.getDate()+7); return m; })();
 const WEEK_KEY=iso(THIS_MONDAY);
 function weekLetter(){
   const a=mondayOf(new Date(DEFAULT_ANCHOR+"T12:00:00"));
@@ -419,7 +421,8 @@ const fmtLong=new Intl.DateTimeFormat("it-IT",{weekday:"long",day:"numeric",mont
 const dateOf=i=>{const d=new Date(THIS_MONDAY); d.setDate(d.getDate()+i); return d;};
 
 document.getElementById("sub").textContent =
-  "Settimana "+weekLetter()+" · dal "+fmt.format(THIS_MONDAY)+" al "+fmt.format(dateOf(4));
+  (IS_WEEKEND?"Prossima settimana ":"Settimana ")+weekLetter()+" · dal "+fmt.format(THIS_MONDAY)+" al "+fmt.format(dateOf(4));
+if(IS_WEEKEND) document.getElementById("settTitolo").textContent="Prossima settimana · iscrizioni aperte";
 
 /* ===== 4) SUPABASE ===== */
 const CONFIGURED = SUPABASE_URL && SUPABASE_KEY;
@@ -513,7 +516,7 @@ function renderOggi(){
       '<div class="small">Si riparte lunedì con il tema '+THEMES[GRID[wk][0]]+'.</div>';
     $("oggiTitolo").textContent="Corsi Plus";
     $("oggiBox").innerHTML='<div class="card"><p style="margin:0;font-size:15px">Oggi non ci sono corsi. '+
-      'Vai su <b>Settimana in corso</b> per iscriverti ai prossimi.</p></div>';
+      'Le iscrizioni per la prossima settimana sono già aperte: vai su <b>Settimana</b>.</p></div>';
     return;
   }
   tema.innerHTML='<div class="lab">'+fmtLong.format(new Date()).toUpperCase()+'</div>'+
