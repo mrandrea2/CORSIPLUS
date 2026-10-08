@@ -93,6 +93,20 @@
   .srow .n{font-size:14px;flex:1}
   .srow .n .vuoto{color:#9A9A9A;font-style:italic}
   .srow .n .ris{color:#7A6A3A}
+  .sbtn{border:1px solid var(--terra);background:#fff;color:var(--terra);font-weight:800;font-size:12px;
+    border-radius:8px;padding:6px 10px;margin:6px 6px 0 0;cursor:pointer}
+  .sbtn.ok{border-color:var(--ok);color:var(--ok)}
+  .sbtn.ghost{border-color:var(--line);color:#4A5A50}
+  .sbtn:disabled{opacity:.5}
+  .ask{background:#FBEDE9;border-radius:10px;padding:8px 10px;margin-top:6px;font-size:13px;font-weight:700;color:var(--terra)}
+  .ask .sbtn{display:inline-block}
+  .offtag{display:inline-block;background:var(--terra);color:#fff;border-radius:6px;padding:2px 7px;
+    font-size:11px;font-weight:800;letter-spacing:.5px}
+  .slot.off{background:#F3EFE7}
+  .slot.off .mod{color:#9A9A9A;text-decoration:line-through}
+  .slot.off .offtag{margin-left:auto}
+  .srow.off .m{color:#9A9A9A}
+  .avvisa{color:var(--terra);font-weight:700}
   .subtabs{display:flex;gap:8px;margin:12px 0 4px}
   .subtabs button{flex:1;padding:11px 6px;border:2px solid var(--line);background:#fff;color:var(--ink);
     border-radius:10px;font-weight:800;font-size:13px;cursor:pointer}
@@ -456,8 +470,40 @@ async function annullaMia(id,nome){
   if(ok===false) throw new Error("Sono passati più di "+MINUTI_ANNULLO+" minuti: chiedi a un preparatore.");
 }
 
+/* ---- corsi tolti dai preparatori ----
+   week_key = data del lunedì  → solo quella settimana
+   week_key = "*"             → tutte le settimane                     */
+let ANNULLATI=[], ANNULLATI_OK=true;
+async function loadAnnullati(tutte){
+  const filtro = tutte ? "" : "week_key=in.("+encodeURIComponent('"'+WEEK_KEY+'","*"')+")&";
+  const r=await fetch(SUPABASE_URL+"/rest/v1/corsi_annullati?"+filtro+"select=*",{headers:HEAD});
+  if(!r.ok){ ANNULLATI_OK=false; return []; }   // tabella non ancora creata: l'app funziona lo stesso
+  ANNULLATI_OK=true;
+  return await r.json();
+}
+function annullato(di,si,wk,lista){
+  const L=lista||ANNULLATI, w=wk||WEEK_KEY;
+  for(let i=0;i<L.length;i++){
+    const a=L[i];
+    if(a.day===di&&a.slot===si&&(a.week_key===w||a.week_key==="*")) return a;
+  }
+  return null;
+}
+async function rpcCorso(fn,wk,di,si){
+  const r=await fetch(SUPABASE_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:HEAD,
+    body:JSON.stringify({p_week:wk,p_day:di,p_slot:si,p_pin:ADMIN_PIN})});
+  if(!r.ok){ const t=await r.text();
+    if(t.indexOf("PIN")>=0) throw new Error("PIN non valido sul database.");
+    if(r.status===404) throw new Error("Manca la parte nuova su Supabase: esegui lo script del README (passo 3).");
+    throw new Error("Operazione non riuscita ("+r.status+")."); }
+}
+async function ricarica(){
+  const res=await Promise.all([loadIscrizioni(),loadAnnullati(false)]);
+  DATA=res[0]; ANNULLATI=res[1];
+}
+
 /* ===== 5) UI ===== */
-let DATA=[], adminMode=false;
+let DATA=[], adminMode=false, pendingCancel=null;
 const $=function(id){ return document.getElementById(id); };
 
 const sel=$("atleta");
@@ -486,6 +532,13 @@ function riga(x,me,extra){
 
 /* un singolo slot */
 function slotHTML(di,si,mod,me){
+  if(annullato(di,si)){
+    return '<div class="slot off"><div class="slothead">'+
+      '<span class="time">'+SLOTS[si]+'</span>'+
+      '<span class="mod">'+mod+'</span>'+
+      '<span class="offtag">ANNULLATO</span></div>'+
+      '<p class="note" style="margin:8px 0 0">Questo corso non si fa. Se vuoi allenarti vai al <b>campo 8</b>.</p></div>';
+  }
   const cap=POSTI[mod]||8;
   const lista=DATA.filter(function(x){ return x.day===di&&x.slot===si; });
   const tit=lista.slice(0,cap), ris=lista.slice(cap,cap+MAX_RISERVE);
@@ -550,7 +603,7 @@ function bind(){
     b.onclick=async function(){
       const p=b.dataset.go.split("-");
       b.disabled=true; b.textContent="Invio…";
-      try{ await iscrivi(Number(p[0]),Number(p[1]),sel.value); DATA=await loadIscrizioni(); setMsg("Iscrizione registrata.","ok"); }
+      try{ await iscrivi(Number(p[0]),Number(p[1]),sel.value); await ricarica(); setMsg("Iscrizione registrata.","ok"); }
       catch(e){ setMsg(e.message,"err"); }
       renderAll();
     };
@@ -558,7 +611,7 @@ function bind(){
   document.querySelectorAll("[data-del]").forEach(function(b){
     b.onclick=async function(){
       if(!confirm("Rimuovere questa iscrizione?")) return;
-      try{ await rimuoviAdmin(b.dataset.del); DATA=await loadIscrizioni(); setMsg("Iscrizione rimossa.","ok"); }
+      try{ await rimuoviAdmin(b.dataset.del); await ricarica(); setMsg("Iscrizione rimossa.","ok"); }
       catch(e){ setMsg(e.message,"err"); }
       renderAll();
     };
@@ -566,7 +619,7 @@ function bind(){
   document.querySelectorAll("[data-undo]").forEach(function(b){
     b.onclick=async function(){
       if(!confirm("Annullare la tua iscrizione?")) return;
-      try{ await annullaMia(b.dataset.undo,sel.value); DATA=await loadIscrizioni(); setMsg("Iscrizione annullata.","ok"); }
+      try{ await annullaMia(b.dataset.undo,sel.value); await ricarica(); setMsg("Iscrizione annullata.","ok"); }
       catch(e){ setMsg(e.message,"err"); }
       renderAll();
     };
@@ -604,13 +657,14 @@ function renderStaff(){
   $("pinBox").innerHTML='<div class="sbox" style="display:flex;justify-content:space-between;align-items:center;gap:10px">'+
     '<b style="color:var(--ok)">Modalità preparatore attiva</b>'+
     '<button class="xbtn" id="pinOut">esci</button></div>'+
-    '<p class="note">Nelle sezioni Oggi e Settimana compare la ✕ accanto a ogni nome per rimuovere un\'iscrizione.</p>';
-  $("pinOut").onclick=function(){ adminMode=false; staffView="settimana"; renderAll(); };
+    '<p class="note">Nelle sezioni Oggi e Settimana compare la ✕ accanto a ogni nome per rimuovere un\'iscrizione. '+
+    'Qui sotto, con <b>TOGLI</b>, annulli un corso: sparisce per tutti gli atleti.</p>';
+  $("pinOut").onclick=function(){ adminMode=false; staffView="settimana"; pendingCancel=null; renderAll(); };
   renderSubtabs();
   if(staffView==="storico"){ renderStorico(); return; }
 
   const today=todayIdx();
-  let h="", tot=0;
+  let h="", tot=0, nOff=0;
   DAYS.forEach(function(dn,di){
     h+='<div class="sday '+(di===today?"oggi":"")+'">'+dn+' '+fmt.format(dateOf(di))+
        (di===today?' · OGGI':'')+'</div><div class="sbox">';
@@ -618,18 +672,64 @@ function renderStaff(){
       const cap=POSTI[mod]||8;
       const lista=DATA.filter(function(x){ return x.day===di&&x.slot===si; });
       const tit=lista.slice(0,cap), ris=lista.slice(cap,cap+MAX_RISERVE);
+      const off=annullato(di,si), key=di+"-"+si;
+      if(off){
+        nOff++;
+        h+='<div class="srow off"><span class="t">'+SLOTS[si].split(" ")[0]+'</span>'+
+           '<span class="m">'+mod+'<br><span class="offtag">'+(off.week_key==="*"?"TOLTO SEMPRE":"TOLTO")+'</span></span>'+
+           '<span class="n">'+(lista.length?'<span class="avvisa">Da avvisare: '+nomi(lista)+'</span>':'<span class="vuoto">nessun iscritto</span>')+
+           '<br><button class="sbtn ok" data-restore="'+key+'" data-wk="'+off.week_key+'">RIPRISTINA</button></span></div>';
+        return;
+      }
       tot+=tit.length;
+      let ctrl;
+      if(pendingCancel===key){
+        ctrl='<div class="ask">Togliere '+mod+' di '+dn.toLowerCase()+' alle '+SLOTS[si].split(" ")[0]+'?'+
+          '<button class="sbtn" data-cancel="'+key+'" data-wk="'+WEEK_KEY+'">SOLO QUESTA SETTIMANA</button>'+
+          '<button class="sbtn" data-cancel="'+key+'" data-wk="*">TUTTE LE SETTIMANE</button>'+
+          '<button class="sbtn ghost" data-nocancel="1">NO, LASCIA</button></div>';
+      } else ctrl='<button class="sbtn" data-ask="'+key+'">TOGLI</button>';
       h+='<div class="srow"><span class="t">'+SLOTS[si].split(" ")[0]+'</span>'+
          '<span class="m">'+mod+'<br><span style="font-weight:500;font-size:12px;color:#4A5A50">'+
          tit.length+'/'+cap+'</span></span><span class="n">'+nomi(tit)+
-         (ris.length?'<br><span class="ris">ris: '+nomi(ris)+'</span>':'')+'</span></div>';
+         (ris.length?'<br><span class="ris">ris: '+nomi(ris)+'</span>':'')+'<br>'+ctrl+'</span></div>';
     });
     h+='</div>';
   });
-  $("staffBox").innerHTML='<div class="sbox" style="background:var(--dark);color:#fff;border-color:var(--dark)">'+
+  const avviso = ANNULLATI_OK ? "" :
+    '<div class="setup"><b>Per togliere i corsi manca un passaggio su Supabase.</b><br>'+
+    'Esegui lo script del README, passo 3 (tabella <code>corsi_annullati</code>). Il resto dell\'app funziona normalmente.</div>';
+  $("staffBox").innerHTML=avviso+'<div class="sbox" style="background:var(--dark);color:#fff;border-color:var(--dark)">'+
     '<b style="font-size:16px">'+tot+' iscrizioni</b> <span style="color:#CFE3D2;font-size:14px">nella settimana '+
-    weekLetter()+'</span></div>'+h+
+    weekLetter()+(nOff?' · '+nOff+' cors'+(nOff===1?'o tolto':'i tolti'):'')+'</span></div>'+h+
     '<button class="btn" id="copiaBtn" style="margin-top:14px">COPIA IL RIEPILOGO</button>';
+
+  document.querySelectorAll("[data-ask]").forEach(function(b){
+    b.onclick=function(){ pendingCancel=b.dataset.ask; renderStaff(); };
+  });
+  document.querySelectorAll("[data-nocancel]").forEach(function(b){
+    b.onclick=function(){ pendingCancel=null; renderStaff(); };
+  });
+  document.querySelectorAll("[data-cancel]").forEach(function(b){
+    b.onclick=async function(){
+      const p=b.dataset.cancel.split("-");
+      b.disabled=true; b.textContent="Invio…";
+      try{ await rpcCorso("annulla_corso",b.dataset.wk,Number(p[0]),Number(p[1])); await ricarica();
+           STORICO=null; setMsg(b.dataset.wk==="*"?"Corso tolto da tutte le settimane.":"Corso tolto per questa settimana.","ok"); }
+      catch(e){ setMsg(e.message,"err"); }
+      pendingCancel=null; renderAll();
+    };
+  });
+  document.querySelectorAll("[data-restore]").forEach(function(b){
+    b.onclick=async function(){
+      const p=b.dataset.restore.split("-");
+      b.disabled=true; b.textContent="Invio…";
+      try{ await rpcCorso("ripristina_corso",b.dataset.wk,Number(p[0]),Number(p[1])); await ricarica();
+           STORICO=null; setMsg("Corso ripristinato.","ok"); }
+      catch(e){ setMsg(e.message,"err"); }
+      renderAll();
+    };
+  });
 
   $("copiaBtn").onclick=function(){
     let t="CORSI PLUS · settimana "+weekLetter()+"\n";
@@ -639,6 +739,7 @@ function renderStaff(){
         const cap=POSTI[mod]||8;
         const lista=DATA.filter(function(x){ return x.day===di&&x.slot===si; });
         const tit=lista.slice(0,cap), ris=lista.slice(cap,cap+MAX_RISERVE);
+        if(annullato(di,si)){ t+=SLOTS[si].split(" ")[0]+" "+mod+": ANNULLATO\n"; return; }
         t+=SLOTS[si].split(" ")[0]+" "+mod+" ("+tit.length+"/"+cap+"): "+
            (tit.length?tit.map(function(x){return x.nome;}).join(", "):"-")+"\n";
         if(ris.length) t+="   riserve: "+ris.map(function(x){return x.nome;}).join(", ")+"\n";
@@ -652,9 +753,11 @@ function renderStaff(){
 /* ---- STORICO ---- */
 let STORICO=null, staffView="settimana";
 
+let ANN_TUTTI=[];
 async function loadStorico(){
   const r=await fetch(API+"?select=*&order=created_at.asc",{headers:HEAD});
   if(!r.ok) throw new Error("Storico non disponibile ("+r.status+")");
+  ANN_TUTTI=await loadAnnullati(true);
   return await r.json();
 }
 /* conta solo le iscrizioni entrate come titolari */
@@ -668,6 +771,7 @@ function calcolaPresenze(rows){
   Object.keys(gruppi).forEach(function(k){
     const parti=k.split("|"), di=Number(parti[1]), si=Number(parti[2]);
     const mod=(PLUS[di]||[])[si]; if(!mod) return;
+    if(annullato(di,si,parti[0],ANN_TUTTI)) return;   // corso tolto: non conta
     const cap=POSTI[mod]||8;
     settimane[parti[0]]=true;
     gruppi[k].slice(0,cap).forEach(function(x){
@@ -713,7 +817,7 @@ function renderStorico(){
   });
   h+='</div>';
   h+='<button class="btn" id="csvBtn" style="margin-top:12px">ESPORTA IN CSV</button>';
-  h+='<p class="note">Sono contate le presenze da titolare. Le riserve non entrano nel conteggio.</p>';
+  h+='<p class="note">Sono contate le presenze da titolare. Le riserve e i corsi tolti non entrano nel conteggio.</p>';
   box.innerHTML=h;
 
   $("csvBtn").onclick=function(){
@@ -772,9 +876,9 @@ document.querySelectorAll("nav button").forEach(function(b){
 
 (async function start(){
   if(!CONFIGURED){ renderAll(); return; }
-  try{ DATA=await loadIscrizioni(); }catch(e){ setMsg(e.message,"err"); }
+  try{ await ricarica(); }catch(e){ setMsg(e.message,"err"); }
   renderAll();
-  setInterval(async function(){ try{ DATA=await loadIscrizioni(); renderAll(); }catch(e){} },30000);
+  setInterval(async function(){ try{ await ricarica(); renderAll(); }catch(e){} },30000);
 })();
 </script>
 </body>

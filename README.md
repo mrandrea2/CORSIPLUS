@@ -13,6 +13,10 @@ il proprio nome da un elenco e si iscrive alle sessioni della settimana in corso
   (pulsante *annulla* accanto al proprio nome). Dopo, serve un preparatore.
 - **Preparatori**: pulsante "Area preparatori", PIN, e compaiono le ✕ accanto a ogni nome.
   Tutto dall'app, senza mai entrare in Supabase.
+- **Togliere un corso**: in Area preparatori, pulsante *TOGLI* accanto al corso, poi
+  *Solo questa settimana* oppure *Tutte le settimane*. Il corso compare come ANNULLATO a tutti
+  e non accetta iscrizioni. *RIPRISTINA* lo rimette. Gli eventuali iscritti restano scritti
+  in rosso ("da avvisare") e non contano nello storico presenze.
 - Titolari e riserve non sono salvati come tali: si calcolano leggendo le iscrizioni in ordine
   cronologico, quindi due iscrizioni simultanee non entrano mai in conflitto.
 
@@ -106,6 +110,48 @@ const PLUS_APP_URL = "https://corsi-plus-xxxx.vercel.app";
 ```
 
 Nella scheda PLUS comparira' il pulsante "APRI LE ISCRIZIONI".
+
+## Aggiunta: togliere i corsi (da eseguire una volta)
+
+Supabase → **SQL Editor** → **New query**, incolla e premi **Run**.
+Prima sostituisci `000000` con lo **stesso PIN** che c'e' in `ADMIN_PIN` dentro `index.html` (in due punti).
+
+```sql
+create table corsi_annullati (
+  id uuid primary key default gen_random_uuid(),
+  week_key text not null,               -- lunedi' della settimana, oppure '*' = tutte le settimane
+  day int not null check (day between 0 and 4),
+  slot int not null check (slot between 0 and 2),
+  created_at timestamptz not null default now(),
+  unique (week_key, day, slot)
+);
+alter table corsi_annullati enable row level security;
+create policy "lettura pubblica" on corsi_annullati for select using (true);
+-- nessuna policy di scrittura: si toglie/ripristina solo con le funzioni + PIN
+
+create or replace function annulla_corso(p_week text, p_day int, p_slot int, p_pin text)
+returns boolean language plpgsql security definer as $$
+begin
+  if p_pin <> '000000' then raise exception 'PIN errato'; end if;   -- <<< PIN
+  insert into corsi_annullati(week_key, day, slot) values (p_week, p_day, p_slot)
+  on conflict do nothing;
+  return true;
+end; $$;
+
+create or replace function ripristina_corso(p_week text, p_day int, p_slot int, p_pin text)
+returns boolean language plpgsql security definer as $$
+begin
+  if p_pin <> '000000' then raise exception 'PIN errato'; end if;   -- <<< PIN
+  delete from corsi_annullati where week_key = p_week and day = p_day and slot = p_slot;
+  return true;
+end; $$;
+
+grant execute on function annulla_corso(text, int, int, text) to anon;
+grant execute on function ripristina_corso(text, int, int, text) to anon;
+```
+
+Finche' questo script non e' eseguito l'app funziona normalmente; solo in Area preparatori
+compare un avviso giallo e i pulsanti TOGLI non hanno effetto.
 
 ---
 
