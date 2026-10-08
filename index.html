@@ -107,6 +107,12 @@
   .slot.off .offtag{margin-left:auto}
   .srow.off .m{color:#9A9A9A}
   .avvisa{color:var(--terra);font-weight:700}
+  .chip{display:inline-flex;align-items:center;gap:4px;background:var(--pale);border-radius:8px;
+    padding:3px 4px 3px 8px;margin:2px 2px 2px 0;font-size:14px}
+  .ris .chip{background:#F4EBD3}
+  .chip button{border:0;background:#fff;color:var(--terra);font-weight:800;font-size:12px;border-radius:6px;
+    width:24px;height:24px;cursor:pointer;line-height:1}
+  .chip button:disabled{opacity:.4}
   .subtabs{display:flex;gap:8px;margin:12px 0 4px}
   .subtabs button{flex:1;padding:11px 6px;border:2px solid var(--line);background:#fff;color:var(--ink);
     border-radius:10px;font-weight:800;font-size:13px;cursor:pointer}
@@ -636,6 +642,11 @@ function renderAll(){
 }
 
 /* ---- AREA PREPARATORI ---- */
+function nomiX(lista){
+  return lista.length ? lista.map(function(x){
+      return '<span class="chip">'+x.nome+'<button data-sdel="'+x.id+'" title="Togli iscrizione">✕</button></span>'; }).join(" ")
+    : '<span class="vuoto">nessuno</span>';
+}
 function nomi(lista){
   return lista.length ? lista.map(function(x){ return x.nome; }).join(", ")
                       : '<span class="vuoto">nessuno</span>';
@@ -658,7 +669,8 @@ function renderStaff(){
     '<b style="color:var(--ok)">Modalità preparatore attiva</b>'+
     '<button class="xbtn" id="pinOut">esci</button></div>'+
     '<p class="note">Nelle sezioni Oggi e Settimana compare la ✕ accanto a ogni nome per rimuovere un\'iscrizione. '+
-    'Qui sotto, con <b>TOGLI</b>, annulli un corso: sparisce per tutti gli atleti.</p>';
+    'Qui sotto: <b>✕</b> toglie un singolo iscritto, <b>SVUOTA ISCRITTI</b> toglie tutti gli iscritti ma lascia il corso aperto, '+
+    '<b>TOGLI CORSO</b> annulla il corso per tutti.</p>';
   $("pinOut").onclick=function(){ adminMode=false; staffView="settimana"; pendingCancel=null; renderAll(); };
   renderSubtabs();
   if(staffView==="storico"){ renderStorico(); return; }
@@ -677,7 +689,7 @@ function renderStaff(){
         nOff++;
         h+='<div class="srow off"><span class="t">'+SLOTS[si].split(" ")[0]+'</span>'+
            '<span class="m">'+mod+'<br><span class="offtag">'+(off.week_key==="*"?"TOLTO SEMPRE":"TOLTO")+'</span></span>'+
-           '<span class="n">'+(lista.length?'<span class="avvisa">Da avvisare: '+nomi(lista)+'</span>':'<span class="vuoto">nessun iscritto</span>')+
+           '<span class="n">'+(lista.length?'<span class="avvisa">Da avvisare:</span> '+nomiX(lista):'<span class="vuoto">nessun iscritto</span>')+
            '<br><button class="sbtn ok" data-restore="'+key+'" data-wk="'+off.week_key+'">RIPRISTINA</button></span></div>';
         return;
       }
@@ -688,11 +700,12 @@ function renderStaff(){
           '<button class="sbtn" data-cancel="'+key+'" data-wk="'+WEEK_KEY+'">SOLO QUESTA SETTIMANA</button>'+
           '<button class="sbtn" data-cancel="'+key+'" data-wk="*">TUTTE LE SETTIMANE</button>'+
           '<button class="sbtn ghost" data-nocancel="1">NO, LASCIA</button></div>';
-      } else ctrl='<button class="sbtn" data-ask="'+key+'">TOGLI</button>';
+      } else ctrl='<button class="sbtn" data-ask="'+key+'">TOGLI CORSO</button>'+
+        (lista.length?'<button class="sbtn ghost" data-empty="'+key+'">SVUOTA ISCRITTI</button>':'');
       h+='<div class="srow"><span class="t">'+SLOTS[si].split(" ")[0]+'</span>'+
          '<span class="m">'+mod+'<br><span style="font-weight:500;font-size:12px;color:#4A5A50">'+
-         tit.length+'/'+cap+'</span></span><span class="n">'+nomi(tit)+
-         (ris.length?'<br><span class="ris">ris: '+nomi(ris)+'</span>':'')+'<br>'+ctrl+'</span></div>';
+         tit.length+'/'+cap+'</span></span><span class="n">'+nomiX(tit)+
+         (ris.length?'<div class="ris" style="margin-top:4px">riserve: '+nomiX(ris)+'</div>':'')+'<br>'+ctrl+'</span></div>';
     });
     h+='</div>';
   });
@@ -704,6 +717,30 @@ function renderStaff(){
     weekLetter()+(nOff?' · '+nOff+' cors'+(nOff===1?'o tolto':'i tolti'):'')+'</span></div>'+h+
     '<button class="btn" id="copiaBtn" style="margin-top:14px">COPIA IL RIEPILOGO</button>';
 
+  document.querySelectorAll("[data-sdel]").forEach(function(b){
+    b.onclick=async function(){
+      const x=DATA.find(function(r){ return r.id===b.dataset.sdel; });
+      if(!confirm("Togliere "+(x?x.nome:"questa iscrizione")+"?")) return;
+      b.disabled=true;
+      try{ await rimuoviAdmin(b.dataset.sdel); await ricarica(); STORICO=null; setMsg("Iscrizione tolta.","ok"); }
+      catch(e){ setMsg(e.message,"err"); }
+      renderAll();
+    };
+  });
+  document.querySelectorAll("[data-empty]").forEach(function(b){
+    b.onclick=async function(){
+      const p=b.dataset.empty.split("-"), di=Number(p[0]), si=Number(p[1]);
+      const lista=DATA.filter(function(x){ return x.day===di&&x.slot===si; });
+      if(!confirm("Togliere tutti gli iscritti ("+lista.length+") da "+PLUS[di][si]+" di "+DAYS[di].toLowerCase()+"?\nIl corso resta aperto.")) return;
+      b.disabled=true; b.textContent="Invio…";
+      let ko=0;
+      for(const x of lista){ try{ await rimuoviAdmin(x.id); }catch(e){ ko++; } }
+      try{ await ricarica(); }catch(e){}
+      STORICO=null;
+      setMsg(ko?"Non sono riuscito a togliere "+ko+" iscrizioni.":"Iscritti tolti, il corso resta aperto.", ko?"err":"ok");
+      renderAll();
+    };
+  });
   document.querySelectorAll("[data-ask]").forEach(function(b){
     b.onclick=function(){ pendingCancel=b.dataset.ask; renderStaff(); };
   });

@@ -13,6 +13,9 @@ il proprio nome da un elenco e si iscrive alle sessioni della settimana in corso
   (pulsante *annulla* accanto al proprio nome). Dopo, serve un preparatore.
 - **Preparatori**: pulsante "Area preparatori", PIN, e compaiono le ✕ accanto a ogni nome.
   Tutto dall'app, senza mai entrare in Supabase.
+- **Togliere iscritti** (Area preparatori → Settimana): ✕ accanto al nome per un singolo atleta,
+  oppure *SVUOTA ISCRITTI* per togliere tutti gli iscritti di un corso lasciandolo aperto.
+  Funziona subito, non serve nulla di nuovo su Supabase.
 - **Togliere un corso**: in Area preparatori, pulsante *TOGLI* accanto al corso, poi
   *Solo questa settimana* oppure *Tutte le settimane*. Il corso compare come ANNULLATO a tutti
   e non accetta iscrizioni. *RIPRISTINA* lo rimette. Gli eventuali iscritti restano scritti
