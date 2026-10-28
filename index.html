@@ -214,7 +214,7 @@
         <li><b>15:30 · 16:30 · 17:30</b></li>
         <li>Ogni corso dura <b>un'ora</b></li>
       </ul>
-      <p class="note">I moduli cambiano orario ogni giorno: guarda la sezione Settimana in corso.</p>
+      <p class="note">I moduli cambiano orario ogni giorno e ogni settimana: guarda sempre la sezione Settimana prima di iscriverti.</p>
     </div>
 
     <h2>Cosa devi fare</h2>
@@ -446,7 +446,7 @@ const DEFAULT_ANCHOR = "2026-10-05";
 /* ===== 2) DATI FISSI ===== */
 const DAYS  = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì"];
 const SLOTS = ["15:30 – 16:30","16:30 – 17:30","17:30 – 18:30"];
-const PLUS  = {
+const PLUS_BASE = {
   0:["FORZA","VELOCITÀ","RESISTENZA"],
   1:["VELOCITÀ","RESISTENZA","FORZA"],
   2:["RESISTENZA","FORZA","VELOCITÀ"],
@@ -467,6 +467,26 @@ const iso=d=>d.toISOString().slice(0,10);
 const IS_WEEKEND=((new Date().getDay()+6)%7)>=5;
 const THIS_MONDAY=(function(){ const m=mondayOf(new Date()); if(IS_WEEKEND) m.setDate(m.getDate()+7); return m; })();
 const WEEK_KEY=iso(THIS_MONDAY);
+
+/* ---- rotazione dei Plus anche tra le settimane (ciclo di 3) ----
+   La settimana del 19/10/2026 e quelle precedenti usano lo schema base.
+   Ogni settimana successiva ogni modulo scala di un'ora; venerdì 17:30 resta il calcettone. */
+const PLUS_ROT_START = "2026-10-19";
+function plusCiclo(monday){
+  const a = mondayOf(new Date(PLUS_ROT_START+"T12:00:00"));
+  const d = Math.round((monday - a)/(7*24*3600*1000));
+  return d < 0 ? 0 : d % 3;
+}
+function plusGiorno(di, monday){
+  const k = plusCiclo(monday);
+  if(di === 4){ const F=["VELOCITÀ","RESISTENZA","FORZA"]; return [F[k%3], F[(k+1)%3], "CALCETTONE"]; }
+  const b = PLUS_BASE[di];
+  return [b[k%3], b[(k+1)%3], b[(k+2)%3]];
+}
+function plusSettimana(monday){ const o={}; for(let i=0;i<5;i++) o[i]=plusGiorno(i,monday); return o; }
+const PLUS = plusSettimana(THIS_MONDAY);   // moduli della settimana mostrata
+function mondayDaKey(wk){ const d=new Date(wk+"T12:00:00"); d.setDate(d.getDate()+3); return mondayOf(d); }
+
 function weekLetter(){
   const a=mondayOf(new Date(DEFAULT_ANCHOR+"T12:00:00"));
   const diff=Math.round((THIS_MONDAY-a)/(7*24*3600*1000));
@@ -843,7 +863,7 @@ function calcolaPresenze(rows){
   const per={}, moduli={}, settimane={};
   Object.keys(gruppi).forEach(function(k){
     const parti=k.split("|"), di=Number(parti[1]), si=Number(parti[2]);
-    const mod=(PLUS[di]||[])[si]; if(!mod) return;
+    const mod=(plusGiorno(di,mondayDaKey(parti[0]))||[])[si]; if(di>4||!mod) return;
     if(annullato(di,si,parti[0],ANN_TUTTI)) return;   // corso tolto: non conta
     const cap=POSTI[mod]||8;
     settimane[parti[0]]=true;
