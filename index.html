@@ -6,117 +6,221 @@
 <meta name="theme-color" content="#0E3A1C">
 <title>Corsi Plus · CT Scaligero</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎾</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{--dark:#0E3A1C;--dark2:#16512A;--terra:#C4553B;--sand:#EDE7D9;--pale:#E8F0E5;
-        --lime:#9FD27F;--ink:#14261A;--line:#D6D0C2;--ok:#2E7D32;--warn:#B8860B;--blu:#2B5EA7}
+        --lime:#C8F25A;--ink:#14261A;--line:#DDD6C7;--ok:#2E7D32;--warn:#B8860B;--blu:#2B5EA7;
+        --bg:#F4F1E8;--card:#FFFFFF;--mut:#56645B;
+        --c-forza:#1F6B3A;--c-vel:#C4553B;--c-res:#2B5EA7;--c-cal:#B8860B;
+        --r:18px;--shadow:0 6px 18px rgba(14,58,28,.10),0 1px 3px rgba(14,58,28,.08)}
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  body{margin:0;background:#F7F5EF;color:var(--ink);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding-bottom:88px}
-  .wrap{max-width:640px;margin:0 auto;padding:0 14px}
-  header{background:var(--dark);color:#fff;padding:14px 0;border-bottom:4px solid var(--terra)}
-  .brand{font-size:12px;letter-spacing:2px;color:var(--lime);font-weight:700}
-  h1{font-size:24px;margin:2px 0 0;font-weight:800}
-  .sub{font-size:13px;color:#CFE3D2;margin-top:3px}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Barlow",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:16px;padding-bottom:96px}
+  .wrap{max-width:680px;margin:0 auto;padding:0 16px}
+  .disp{font-family:"Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.3px}
+  svg.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 
-  h2{font-size:19px;margin:20px 0 8px;color:var(--dark);font-weight:800}
-  h3{font-size:16px;margin:0 0 6px;font-weight:800}
-  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
-  .note{font-size:13px;color:#4A5A50;font-style:italic}
+  /* ---------- HERO ---------- */
+  header{position:relative;overflow:hidden;color:#fff;padding:22px 0 26px;
+    background:radial-gradient(120% 140% at 100% 0%,#1F6B3A 0%,#0E3A1C 55%,#0A2A14 100%)}
+  header:before{content:"";position:absolute;inset:-40%;opacity:.13;pointer-events:none;
+    background:repeating-linear-gradient(115deg,#fff 0 2px,transparent 2px 46px);
+    animation:court 28s linear infinite}
+  @keyframes court{to{transform:translateX(92px)}}
+  header .wrap{position:relative}
+  .hdrow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .brand{font-size:13px;letter-spacing:3px;color:var(--lime);font-weight:700}
+  h1{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-size:46px;line-height:.95;margin:4px 0 0;font-weight:800;letter-spacing:.5px}
+  .sub{font-size:15px;color:#D6E8D9;margin-top:8px;font-weight:500}
+  .staffpill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);color:#fff;
+    border:1.5px solid rgba(255,255,255,.35);border-radius:999px;padding:8px 12px;font-weight:700;font-size:12px;
+    letter-spacing:.5px;cursor:pointer;white-space:nowrap;backdrop-filter:blur(4px)}
+  .staffpill svg.i{width:16px;height:16px}
+  .staffpill.on{background:#fff;color:var(--dark);border-color:#fff}
+  .ball{position:absolute;right:18px;bottom:-6px;width:44px;height:44px;animation:bounce 1.6s cubic-bezier(.3,.0,.6,1) infinite}
+  .ball svg{width:100%;height:100%;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}
+  @keyframes bounce{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-34px) rotate(180deg)}}
 
-  .tema{background:var(--dark);color:#fff;border-radius:14px;padding:16px;margin-top:12px}
-  .tema .lab{font-size:12px;letter-spacing:1.5px;color:var(--lime);font-weight:700}
-  .tema .big{font-size:27px;font-weight:800;margin-top:2px;line-height:1.15}
-  .tema .small{font-size:13px;color:#CFE3D2;margin-top:8px}
+  /* ---------- TICKER ---------- */
+  .ticker{background:var(--terra);color:#fff;overflow:hidden;white-space:nowrap;border-top:3px solid var(--lime)}
+  .ticker .track{display:inline-flex;animation:tick 38s linear infinite;padding:9px 0}
+  .ticker span{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:16px;letter-spacing:1px;padding:0 18px}
+  .ticker span:before{content:"●";color:var(--lime);margin-right:14px;font-size:10px;vertical-align:2px}
+  @keyframes tick{to{transform:translateX(-50%)}}
 
-  .namebar{background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px;margin-top:12px}
-  .namebar label{font-size:12px;font-weight:800;letter-spacing:1px;color:var(--dark)}
-  select{width:100%;padding:12px;border:2px solid var(--line);border-radius:10px;
-    font-size:17px;font-weight:700;margin-top:6px;background:#fff;color:var(--ink)}
+  /* ---------- MENU A TESSERE ---------- */
+  .tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
+  .tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:10px;
+    min-height:96px;padding:14px;border:0;border-radius:16px;cursor:pointer;text-align:left;color:#fff;
+    font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:800;font-size:clamp(12.5px,4vw,17px);letter-spacing:0;line-height:1.05;white-space:nowrap;
+    box-shadow:var(--shadow);transition:transform .15s ease,box-shadow .15s ease;overflow:hidden}
+  .tile svg.i{width:30px;height:30px;padding:6px;box-sizing:content-box;border-radius:12px;background:rgba(255,255,255,.18)}
+  .tile:active{transform:scale(.96)}
+  .tile.t-oggi{background:linear-gradient(135deg,#C4553B,#E07A52)}
+  .tile.t-sett{background:linear-gradient(135deg,#0E3A1C,#1F6B3A)}
+  .tile.t-reg{background:linear-gradient(135deg,#2B5EA7,#4A80C9)}
+  .tile.t-cibo{background:linear-gradient(135deg,#7A8F2A,#A2B83C)}
+  .tile.t-resp{background:linear-gradient(135deg,#3E7C88,#5FA3AE)}
+  .tile.t-auto{background:linear-gradient(135deg,#B8860B,#D9A62E)}
+  .tile.on{outline:3px solid var(--ink);outline-offset:2px}
+  .tile.on:after{content:"";position:absolute;right:10px;top:10px;width:10px;height:10px;border-radius:50%;
+    background:var(--lime);box-shadow:0 0 0 0 rgba(200,242,90,.8);animation:ping 1.8s ease-out infinite}
+  @keyframes ping{0%{box-shadow:0 0 0 0 rgba(200,242,90,.8)}100%{box-shadow:0 0 0 12px rgba(200,242,90,0)}}
 
-  .day{background:#fff;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden}
-  .day.today{border:2px solid var(--terra)}
-  .dayhead{background:var(--sand);padding:10px 14px;font-weight:800;font-size:16px;color:var(--dark);
-    display:flex;justify-content:space-between;align-items:center}
-  .day.today .dayhead{background:var(--terra);color:#fff}
-  .slot{padding:12px 14px;border-top:1px solid var(--line)}
-  .slothead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .time{background:var(--dark);color:#fff;border-radius:8px;padding:5px 9px;font-weight:800;font-size:13px}
-  .mod{font-weight:800;font-size:17px;color:var(--dark)}
-  .mod.cal{color:var(--terra)}
-  .cap{font-size:12px;color:#4A5A50;margin-left:auto}
-  ol.lst{margin:8px 0 0;padding-left:22px}
-  ol.lst li{font-size:15px;margin:3px 0}
-  ol.lst li.me{font-weight:800;color:var(--ok)}
-  li.res{color:#7A6A3A}
-  .resbox{margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)}
-  .resbox b{font-size:12px;letter-spacing:1px;color:var(--warn)}
-  .btn{width:100%;margin-top:10px;padding:12px;border:0;border-radius:10px;background:var(--dark);
-    color:#fff;font-weight:800;font-size:15px;cursor:pointer}
-  .btn.res{background:var(--warn)}
-  .btn:disabled{background:#B9B2A6}
-  .xbtn{border:1px solid var(--terra);background:#fff;color:var(--terra);font-weight:800;
-    font-size:11px;border-radius:6px;padding:2px 7px;margin-left:6px;cursor:pointer}
-  .msg{padding:12px;border-radius:10px;margin:10px 0;font-size:15px;font-weight:700}
-  .msg.err{background:#F8D7DA;color:#842029}
-  .msg.ok{background:#D6EBD8;color:#1B5E20}
-  .setup{background:#FFF3CD;border:2px solid var(--warn);border-radius:12px;padding:14px;margin-top:12px}
+  /* ---------- CHI SEI ---------- */
+  .namebar{background:var(--card);border-radius:var(--r);padding:14px;margin-top:16px;box-shadow:var(--shadow)}
+  .namebar label{display:block;font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-size:15px;font-weight:800;letter-spacing:1.5px;color:var(--dark)}
+  select{width:100%;padding:14px 12px;border:2px solid var(--line);border-radius:12px;
+    font-family:inherit;font-size:18px;font-weight:700;margin-top:8px;background:#FBFAF6;color:var(--ink)}
+  select:focus{outline:none;border-color:var(--dark2);background:#fff}
+  .hello{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--pale)}
+  .hello b{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-size:20px;color:var(--dark)}
+  .hello .cnt{margin-left:auto;background:var(--dark);color:#fff;border-radius:999px;padding:5px 12px;font-weight:800;font-size:14px;white-space:nowrap}
+  .hello.none{background:#FBEDE9}
+  .hello.none .cnt{background:var(--terra)}
+
+  /* ---------- TITOLI E CARD ---------- */
+  h2{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-size:28px;line-height:1.05;margin:26px 0 10px;color:var(--dark);font-weight:800;letter-spacing:.3px}
+  h3{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-size:20px;margin:0 0 6px;font-weight:800;letter-spacing:.3px}
+  .card{background:var(--card);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .note{font-size:14px;color:var(--mut);font-style:italic}
+
+  /* ---------- BANNER TEMA DEL GIORNO ---------- */
+  .tema{position:relative;overflow:hidden;color:#fff;border-radius:var(--r);padding:18px;margin-top:16px;box-shadow:var(--shadow);
+    background:linear-gradient(120deg,#0E3A1C,#1F6B3A,#2E8B57,#1F6B3A,#0E3A1C);background-size:300% 100%;animation:flow 12s ease infinite}
+  @keyframes flow{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+  .tema:after{content:"";position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;
+    border:16px solid rgba(200,242,90,.18)}
+  .tema .lab{display:inline-flex;align-items:center;gap:8px;font-size:13px;letter-spacing:2px;color:var(--lime);font-weight:700}
+  .tema .lab:before{content:"";width:9px;height:9px;border-radius:50%;background:var(--lime);animation:ping 1.8s ease-out infinite}
+  .tema .big{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-size:clamp(26px,8.6vw,40px);font-weight:800;margin-top:6px;line-height:1;letter-spacing:.5px}
+  .tema .small{font-size:15px;color:#D6E8D9;margin-top:10px;max-width:90%}
+
+  /* ---------- GIORNI E SLOT ---------- */
+  .day{margin-bottom:18px}
+  .dayhead{display:flex;justify-content:space-between;align-items:center;padding:4px 2px 8px;
+    font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:800;font-size:22px;color:var(--dark)}
+  .dayhead .tag{font-size:14px;letter-spacing:1.5px;background:var(--terra);color:#fff;border-radius:999px;padding:4px 12px;animation:glow 2s ease-in-out infinite}
+  @keyframes glow{50%{box-shadow:0 0 0 6px rgba(196,85,59,.18)}}
+  .slot{--mc:var(--c-forza);background:var(--card);border-radius:var(--r);margin-bottom:10px;box-shadow:var(--shadow);overflow:hidden;
+    animation:rise .35s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .slot.m-VELOCITA{--mc:var(--c-vel)} .slot.m-RESISTENZA{--mc:var(--c-res)} .slot.m-CALCETTONE{--mc:var(--c-cal)}
+  .slothead{display:flex;align-items:center;gap:12px;padding:14px 14px 12px;color:#fff;background:var(--mc);
+    background:linear-gradient(120deg,var(--mc),color-mix(in srgb,var(--mc) 70%,#000))}
+  .slothead .ico{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center}
+  .slothead .ico svg.i{width:26px;height:26px}
+  .slothead .tt{display:flex;flex-direction:column;min-width:0}
+  .time{font-size:14px;font-weight:700;opacity:.92}
+  .mod{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:800;font-size:26px;line-height:1;letter-spacing:.6px}
+  .cap{margin-left:auto;text-align:right;font-weight:800;font-size:22px;font-family:"Barlow Condensed","Arial Narrow",sans-serif;line-height:1}
+  .cap small{display:block;font-family:"Barlow",sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;opacity:.85}
+  .slotbody{padding:12px 14px 14px}
+  .meter{height:8px;border-radius:99px;background:#ECE7DB;overflow:hidden;margin-bottom:10px}
+  .meter i{display:block;height:100%;border-radius:99px;background:var(--mc);transform-origin:left;animation:grow .8s cubic-bezier(.2,.8,.2,1) both}
+  .meter.full i{background:var(--warn)}
+  @keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  ol.lst{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+  ol.lst li{display:inline-flex;align-items:center;gap:4px;font-size:15px;background:#F2EFE6;border-radius:999px;padding:5px 11px;font-weight:600}
+  ol.lst li.me{background:var(--dark);color:#fff}
+  ol.lst li.vuoto{background:none;padding:2px 0;color:#8A8A8A;font-weight:500;font-style:italic}
+  li.res{background:#F7EBCB!important;color:#6B5418}
+  li.res.me{background:var(--warn)!important;color:#fff!important}
+  .resbox{margin-top:10px}
+  .resbox b{display:block;font-size:12px;letter-spacing:1.5px;color:var(--warn);margin-bottom:6px}
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:12px;padding:15px;border:0;border-radius:14px;
+    background:var(--mc,var(--dark));color:#fff;font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:800;font-size:20px;letter-spacing:1px;
+    cursor:pointer;box-shadow:0 4px 0 color-mix(in srgb,var(--mc,var(--dark)) 60%,#000);transition:transform .08s ease,box-shadow .08s ease}
+  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 color-mix(in srgb,var(--mc,var(--dark)) 60%,#000)}
+  .btn.res{background:var(--warn);box-shadow:0 4px 0 #7A5A07}
+  .btn:disabled{background:#CFC8BA;box-shadow:none;cursor:default;color:#fff}
+  .btn.done:disabled{background:var(--ok);animation:pop .4s ease}
+  @keyframes pop{0%{transform:scale(.94)}60%{transform:scale(1.03)}100%{transform:none}}
+  .xbtn{border:0;background:rgba(196,85,59,.12);color:var(--terra);font-weight:800;font-size:12px;border-radius:999px;padding:3px 8px;margin-left:2px;cursor:pointer}
+  li.me .xbtn{background:rgba(255,255,255,.2);color:#fff}
+
+  /* ---------- MESSAGGI (toast) ---------- */
+  #msg{position:fixed;left:0;right:0;top:12px;z-index:60;display:flex;justify-content:center;pointer-events:none;padding:0 16px}
+  .msg{pointer-events:auto;max-width:560px;width:100%;padding:14px 16px;border-radius:14px;font-size:16px;font-weight:700;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);animation:drop .35s cubic-bezier(.2,.9,.3,1.2) both}
+  @keyframes drop{from{opacity:0;transform:translateY(-24px)}to{opacity:1;transform:none}}
+  .msg.err{background:#842029;color:#fff}
+  .msg.ok{background:var(--ok);color:#fff}
+  .setup{background:#FFF3CD;border:2px solid var(--warn);border-radius:14px;padding:14px;margin-top:12px}
   .setup code{background:#fff;padding:2px 5px;border-radius:4px;font-size:13px}
 
   ul{margin:6px 0;padding-left:20px}
-  .si li,.no li{font-size:15px;margin:6px 0;line-height:1.35}
-  .si{border-left:5px solid var(--ok);padding-left:10px}
-  .no{border-left:5px solid var(--terra);padding-left:10px}
+  .si li,.no li{font-size:16px;margin:8px 0;line-height:1.4;padding-left:30px;position:relative}
+  .si li:before,.no li:before{position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:50%;color:#fff;
+    font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .si li:before{content:"✓";background:var(--ok)}
+  .no li:before{content:"✕";background:var(--terra)}
+  .si,.no{padding-left:0!important}
 
-  .breath{display:block;background:var(--dark);color:#fff;text-decoration:none;border-radius:12px;
-    padding:15px;margin-bottom:8px;font-weight:800;font-size:16px}
-  .breath.b2{background:var(--blu)}
-  .breath.b3{background:var(--terra)}
-  .breath span{display:block;font-weight:500;font-size:13px;opacity:.9;margin-top:3px}
+  /* ---------- LINK GRANDI (respirazioni, video) ---------- */
+  .breath{position:relative;display:flex;align-items:center;gap:14px;background:var(--dark);color:#fff;text-decoration:none;border-radius:var(--r);
+    padding:16px;margin-bottom:10px;font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:800;font-size:22px;letter-spacing:.4px;
+    box-shadow:var(--shadow);transition:transform .15s ease;overflow:hidden}
+  .breath:active{transform:scale(.98)}
+  .breath:before{content:"";flex-shrink:0;width:46px;height:46px;border-radius:50%;
+    background:rgba(255,255,255,.18) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 7v10l8-5z' fill='white'/%3E%3C/svg%3E") center/26px no-repeat}
+  .breath:after{content:"›";margin-left:auto;font-size:34px;line-height:1;opacity:.7}
+  .breath .bt{display:flex;flex-direction:column;font-weight:800;font-size:22px;line-height:1.1}
+  .breath .bt span{display:block;font-family:"Barlow",sans-serif;font-weight:500;font-size:14px;letter-spacing:0;opacity:.9;margin-top:3px}
+  .breath.b2{background:linear-gradient(120deg,#2B5EA7,#3F74BF)}
+  .breath.b3{background:linear-gradient(120deg,#C4553B,#D96B4F)}
+  .breath.b4{background:linear-gradient(120deg,#16512A,#2E7D4A)}
+  .breath{background:linear-gradient(120deg,#0E3A1C,#1F6B3A)}
 
-  nav{position:fixed;left:0;right:0;bottom:0;background:var(--dark);display:flex;
-    padding-bottom:env(safe-area-inset-bottom)}
-  nav button{flex:1 1 auto;background:none;border:0;border-top:4px solid transparent;color:#8FB697;
-    padding:12px 1px;font-size:8.6px;font-weight:800;cursor:pointer;white-space:nowrap;letter-spacing:-.1px;
-    min-width:0;overflow:hidden}
-  nav button.on{color:#fff;border-top-color:var(--terra)}
-  .hidden{display:none}
-  .hdrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .staffpill{background:var(--terra);color:#fff;border:0;border-radius:999px;
-    padding:9px 14px;font-weight:800;font-size:12px;letter-spacing:.5px;cursor:pointer;white-space:nowrap}
-  .staffpill.on{background:#fff;color:var(--terra)}
-  .sbox{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
-  .sday{font-weight:800;font-size:17px;color:var(--dark);margin:16px 0 6px}
+  /* ---------- NAV IN BASSO ---------- */
+  nav{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:space-around;
+    background:rgba(14,58,28,.96);backdrop-filter:blur(8px);padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+    box-shadow:0 -6px 20px rgba(0,0,0,.15)}
+  nav button{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;color:#9DBFA5;
+    padding:6px 0;font-size:10px;font-weight:700;letter-spacing:.2px;cursor:pointer;border-radius:12px;min-width:0}
+  nav button svg.i{width:24px;height:24px}
+  nav button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  nav button.on{color:#fff;background:rgba(255,255,255,.12)}
+  nav button.on svg.i{color:var(--lime)}
+  .hidden{display:none!important}
+
+  /* ---------- AREA PREPARATORI (invariata nella sostanza) ---------- */
+  .sbox{background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:10px;box-shadow:var(--shadow)}
+  .sday{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:800;font-size:22px;color:var(--dark);margin:18px 0 6px}
   .sday.oggi{color:var(--terra)}
-  .srow{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-top:1px solid var(--line)}
+  .srow{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid var(--line)}
   .srow:first-child{border-top:0}
   .srow .t{background:var(--dark);color:#fff;border-radius:6px;padding:3px 7px;font-size:12px;font-weight:800;white-space:nowrap}
   .srow .m{font-weight:800;font-size:14px;min-width:92px}
   .srow .n{font-size:14px;flex:1}
   .srow .n .vuoto{color:#9A9A9A;font-style:italic}
   .srow .n .ris{color:#7A6A3A}
-  .sbtn{border:1px solid var(--terra);background:#fff;color:var(--terra);font-weight:800;font-size:12px;
-    border-radius:8px;padding:6px 10px;margin:6px 6px 0 0;cursor:pointer}
+  .sbtn{border:1.5px solid var(--terra);background:#fff;color:var(--terra);font-weight:800;font-size:12px;
+    border-radius:8px;padding:7px 10px;margin:6px 6px 0 0;cursor:pointer}
   .sbtn.ok{border-color:var(--ok);color:var(--ok)}
   .sbtn.ghost{border-color:var(--line);color:#4A5A50}
   .sbtn:disabled{opacity:.5}
   .ask{background:#FBEDE9;border-radius:10px;padding:8px 10px;margin-top:6px;font-size:13px;font-weight:700;color:var(--terra)}
   .ask .sbtn{display:inline-block}
-  .offtag{display:inline-block;background:var(--terra);color:#fff;border-radius:6px;padding:2px 7px;
-    font-size:11px;font-weight:800;letter-spacing:.5px}
-  .slot.off{background:#F3EFE7}
-  .slot.off .mod{color:#9A9A9A;text-decoration:line-through}
-  .slot.off .offtag{margin-left:auto}
+  .offtag{display:inline-block;background:var(--terra);color:#fff;border-radius:6px;padding:3px 8px;
+    font-size:12px;font-weight:800;letter-spacing:.5px}
+  .slot.off .slothead{background:#9C9588}
+  .slot.off .mod{text-decoration:line-through}
+  .slot.off .offtag{margin-left:auto;background:#fff;color:var(--terra)}
   .srow.off .m{color:#9A9A9A}
   .avvisa{color:var(--terra);font-weight:700}
   .chip{display:inline-flex;align-items:center;gap:4px;background:var(--pale);border-radius:8px;
     padding:3px 4px 3px 8px;margin:2px 2px 2px 0;font-size:14px}
   .ris .chip{background:#F4EBD3}
   .chip button{border:0;background:#fff;color:var(--terra);font-weight:800;font-size:12px;border-radius:6px;
-    width:24px;height:24px;cursor:pointer;line-height:1}
+    width:26px;height:26px;cursor:pointer;line-height:1}
   .chip button:disabled{opacity:.4}
-  .subtabs{display:flex;gap:8px;margin:12px 0 4px}
-  .subtabs button{flex:1;padding:11px 6px;border:2px solid var(--line);background:#fff;color:var(--ink);
-    border-radius:10px;font-weight:800;font-size:13px;cursor:pointer}
+  .subtabs{display:flex;gap:8px;margin:14px 0 4px}
+  .subtabs button{flex:1;padding:12px 6px;border:2px solid var(--line);background:#fff;color:var(--ink);
+    border-radius:12px;font-weight:800;font-size:14px;cursor:pointer}
   .subtabs button.on{background:var(--dark);border-color:var(--dark);color:#fff}
   .atl{margin-bottom:12px}
   .atl .top{display:flex;justify-content:space-between;align-items:baseline;font-size:14px}
@@ -124,7 +228,7 @@
   .atl .tot{font-weight:800;color:var(--dark)}
   .bar{display:flex;height:20px;border-radius:6px;overflow:hidden;background:#EEE;margin-top:4px}
   .bar i{display:block;height:100%}
-  .seg-FORZA{background:#0E3A1C}
+  .seg-FORZA{background:#1F6B3A}
   .seg-VELOCITA{background:#C4553B}
   .seg-RESISTENZA{background:#2B5EA7}
   .seg-CALCETTONE{background:#B8860B}
@@ -135,23 +239,25 @@
   .kpi div{flex:1;background:var(--dark);color:#fff;border-radius:12px;padding:12px;text-align:center}
   .kpi b{display:block;font-size:24px}
   .kpi span{font-size:11px;color:#CFE3D2;letter-spacing:.5px}
-  .pin{background:var(--sand);border:2px solid var(--warn);border-radius:14px;padding:16px;text-align:center}
-  .pin input{width:160px;text-align:center;font-size:22px;letter-spacing:4px;padding:10px;
-    border:2px solid var(--line);border-radius:10px;margin-top:8px}
+  .pin{background:var(--card);border-radius:var(--r);padding:18px;text-align:center;margin-top:16px;box-shadow:var(--shadow)}
+  .pin input{width:170px;text-align:center;font-size:24px;letter-spacing:4px;padding:12px;
+    border:2px solid var(--line);border-radius:12px;margin-top:8px}
   .adminbar{margin-top:16px;font-size:13px}
   .adminbar button{background:none;border:0;color:#4A5A50;text-decoration:underline;font-size:13px;cursor:pointer}
-  @media (min-width:420px){ nav button{font-size:10px;padding:13px 2px} }
-  @media (min-width:560px){ nav button{font-size:11.5px} }
-  .breath.b4{background:var(--dark2)}
-  .poster{display:block;width:100%;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;
-    background:#fff;cursor:zoom-in}
+
+  .poster{display:block;width:100%;padding:0;border:0;border-radius:var(--r);overflow:hidden;
+    background:#fff;cursor:zoom-in;box-shadow:var(--shadow)}
   .poster img{display:block;width:100%;height:auto}
-  #zoom{position:fixed;inset:0;background:rgba(10,20,14,.94);z-index:50;overflow:auto;-webkit-overflow-scrolling:touch}
+  #zoom{position:fixed;inset:0;background:rgba(10,20,14,.94);z-index:70;overflow:auto;-webkit-overflow-scrolling:touch}
   #zoom img{display:block;width:200%;max-width:none;height:auto}
-  #zoom button{position:fixed;top:12px;right:12px;z-index:51;background:var(--terra);color:#fff;border:0;
-    border-radius:999px;padding:10px 16px;font-weight:800;font-size:14px;cursor:pointer}
+  #zoom button{position:fixed;top:12px;right:12px;z-index:71;background:var(--terra);color:#fff;border:0;
+    border-radius:999px;padding:12px 18px;font-weight:800;font-size:15px;cursor:pointer}
   @media (min-width:700px){ #zoom img{width:100%;max-width:1100px;margin:0 auto} }
-  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media (min-width:560px){ .tiles{grid-template-columns:repeat(3,minmax(0,1fr))} nav button{font-size:11px} }
+  @media (prefers-reduced-motion:reduce){
+    *,*:before,*:after{animation:none!important;transition:none!important}
+    .ticker .dup{display:none}
+  }
 </style>
 </head>
 <body>
@@ -163,17 +269,33 @@
       <h1>Corsi Plus</h1>
       <div class="sub" id="sub"></div>
     </div>
-    <button class="staffpill" id="staffBtn">AREA<br>PREPARATORI</button>
+    <button class="staffpill" id="staffBtn" aria-label="Area preparatori"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg>STAFF</button>
   </div>
+  <div class="ball" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#C8F25A"/><path d="M6 9c6 4 6 18 0 22M34 9c-6 4-6 18 0 22" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg></div>
 </div></header>
+
+<div class="ticker" aria-hidden="true"><div class="track">
+  <span>ISCRIVITI A INIZIO SETTIMANA</span><span>FORZA: MASSIMO 5 POSTI</span><span>VENERDÌ 17:30 CALCETTONE</span><span>NON PUOI? VAI AL CAMPO 8</span><span>I MODULI CAMBIANO OGNI SETTIMANA</span><span>ANNULLI ENTRO 15 MINUTI</span>
+  <span class="dup">ISCRIVITI A INIZIO SETTIMANA</span><span class="dup">FORZA: MASSIMO 5 POSTI</span><span class="dup">VENERDÌ 17:30 CALCETTONE</span><span class="dup">NON PUOI? VAI AL CAMPO 8</span><span class="dup">I MODULI CAMBIANO OGNI SETTIMANA</span><span class="dup">ANNULLI ENTRO 15 MINUTI</span>
+</div></div>
 
 <div class="wrap">
 
   <div id="setup"></div>
 
+  <div class="tiles" role="navigation" aria-label="Sezioni">
+    <button class="tile t-oggi on" data-tab="oggi"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="2"/></svg>OGGI</button>
+    <button class="tile t-sett" data-tab="sett"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M7.5 14h2M11 14h2M14.5 14h2M7.5 17.5h2M11 17.5h2"/></svg>SETTIMANA</button>
+    <button class="tile t-reg" data-tab="reg"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6h10M10 12h10M10 18h10"/><path d="M4 6l1.2 1.2L7.5 5M4 12l1.2 1.2L7.5 11M4 18l1.2 1.2L7.5 17"/></svg>REGOLE</button>
+    <button class="tile t-cibo" data-tab="cibo"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7.5c-2.2-1.8-6.5-1.2-6.5 3.3 0 4.2 3 9.2 6.5 9.2s6.5-5 6.5-9.2c0-4.5-4.3-5.1-6.5-3.3z"/><path d="M12 7.5c0-2.2 1.2-3.8 3.5-4.5"/></svg>ALIMENTAZIONE</button>
+    <button class="tile t-resp" data-tab="resp"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h10a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7"/></svg>RESPIRAZIONI</button>
+    <button class="tile t-auto" data-tab="auto"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/></svg>AUTONOMO</button>
+  </div>
+
   <div class="namebar">
     <label for="atleta">CHI SEI</label>
     <select id="atleta"><option value="">— scegli il tuo nome —</option></select>
+    <div id="hello"></div>
   </div>
   <div id="msg"></div>
 
@@ -309,22 +431,17 @@
 
     <h3 style="color:var(--dark);margin-top:16px">Per rilassarti</h3>
     <p class="note">Dopo l'allenamento, prima di dormire, o quando sei molto in ansia.</p>
-    <a class="breath" href="https://bit.ly/RESPIRAZIONEPROFONDA" target="_blank" rel="noopener">
-      Respirazione profonda <span>Scarica la tensione dopo lo sforzo</span></a>
-    <a class="breath" href="https://bit.ly/LACOLLINA" target="_blank" rel="noopener">
-      La collina <span>Visualizzazione guidata per calmarti</span></a>
+    <a class="breath" href="https://bit.ly/RESPIRAZIONEPROFONDA" target="_blank" rel="noopener"><span class="bt">Respirazione profonda<span>Scarica la tensione dopo lo sforzo</span></span></a>
+    <a class="breath" href="https://bit.ly/LACOLLINA" target="_blank" rel="noopener"><span class="bt">La collina<span>Visualizzazione guidata per calmarti</span></span></a>
 
     <h3 style="color:var(--blu);margin-top:20px">Per concentrarti</h3>
     <p class="note">Prima dell'allenamento o di una gara, per togliere i pensieri di troppo.</p>
-    <a class="breath b2" href="https://bit.ly/MANTIENIFOCUS" target="_blank" rel="noopener">
-      Mantieni il focus <span>Riporta l'attenzione sul momento</span></a>
-    <a class="breath b2" href="https://bit.ly/RESPIRAZIONEQUADRATA" target="_blank" rel="noopener">
-      Respirazione quadrata <span>Quattro tempi uguali: semplice ed efficace</span></a>
+    <a class="breath b2" href="https://bit.ly/MANTIENIFOCUS" target="_blank" rel="noopener"><span class="bt">Mantieni il focus<span>Riporta l'attenzione sul momento</span></span></a>
+    <a class="breath b2" href="https://bit.ly/RESPIRAZIONEQUADRATA" target="_blank" rel="noopener"><span class="bt">Respirazione quadrata<span>Quattro tempi uguali: semplice ed efficace</span></span></a>
 
     <h3 style="color:var(--terra);margin-top:20px">Per caricarti</h3>
     <p class="note">Quando ti senti spento e devi tirare fuori energia.</p>
-    <a class="breath b3" href="https://bit.ly/ENERGIAPOSITIVA1" target="_blank" rel="noopener">
-      Energia positiva <span>Attiva prima di entrare in campo</span></a>
+    <a class="breath b3" href="https://bit.ly/ENERGIAPOSITIVA1" target="_blank" rel="noopener"><span class="bt">Energia positiva<span>Attiva prima di entrare in campo</span></span></a>
 
     <p class="note" style="margin-top:18px">Se non si apre, copia il link nel browser. Serve la connessione a internet.</p>
   </section>
@@ -334,14 +451,10 @@
     <p class="note" style="margin-bottom:12px">Quando non c'è un Plus o vuoi fare qualcosa in più: segui il video o il protocollo, da solo.</p>
 
     <h3 style="color:var(--dark);margin-top:16px">Video</h3>
-    <a class="breath" href="https://youtu.be/N62xvao_k-o" target="_blank" rel="noopener">
-      Stretching <span>Allungamento guidato</span></a>
-    <a class="breath b2" href="https://youtu.be/Al8VqZ6bDmk" target="_blank" rel="noopener">
-      Mobilità articolare <span>Muovi bene tutte le articolazioni</span></a>
-    <a class="breath b3" href="https://youtu.be/TYG59VJPVzw" target="_blank" rel="noopener">
-      Core stability <span>Addominali, schiena e stabilità del tronco</span></a>
-    <a class="breath b4" href="https://youtu.be/5_LiUJThnhQ" target="_blank" rel="noopener">
-      Elastici arti superiori <span>Spalle e braccia con l'elastico</span></a>
+    <a class="breath" href="https://youtu.be/N62xvao_k-o" target="_blank" rel="noopener"><span class="bt">Stretching<span>Allungamento guidato</span></span></a>
+    <a class="breath b2" href="https://youtu.be/Al8VqZ6bDmk" target="_blank" rel="noopener"><span class="bt">Mobilità articolare<span>Muovi bene tutte le articolazioni</span></span></a>
+    <a class="breath b3" href="https://youtu.be/TYG59VJPVzw" target="_blank" rel="noopener"><span class="bt">Core stability<span>Addominali, schiena e stabilità del tronco</span></span></a>
+    <a class="breath b4" href="https://youtu.be/5_LiUJThnhQ" target="_blank" rel="noopener"><span class="bt">Elastici arti superiori<span>Spalle e braccia con l'elastico</span></span></a>
 
     <h3 style="color:var(--dark);margin-top:22px">Protocollo stretching</h3>
     <p class="note">10 esercizi, 15 minuti. Tocca il poster per ingrandirlo.</p>
@@ -355,13 +468,13 @@
 <div id="zoom" class="hidden"><button id="zoomClose">CHIUDI ✕</button><img id="zoomImg" alt="Protocollo stretching ingrandito"></div>
 
 
-<nav>
-  <button data-tab="oggi" class="on">OGGI</button>
-  <button data-tab="sett">SETTIMANA</button>
-  <button data-tab="reg">REGOLE</button>
-  <button data-tab="cibo">ALIMENTAZIONE</button>
-  <button data-tab="resp">RESPIRAZIONI</button>
-  <button data-tab="auto">AUTONOMO</button>
+<nav aria-label="Sezioni">
+  <button data-tab="oggi" class="on" aria-label="Oggi"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="2"/></svg><span>Oggi</span></button>
+  <button data-tab="sett" aria-label="Settimana"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M7.5 14h2M11 14h2M14.5 14h2M7.5 17.5h2M11 17.5h2"/></svg><span>Settimana</span></button>
+  <button data-tab="reg" aria-label="Regole"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6h10M10 12h10M10 18h10"/><path d="M4 6l1.2 1.2L7.5 5M4 12l1.2 1.2L7.5 11M4 18l1.2 1.2L7.5 17"/></svg><span>Regole</span></button>
+  <button data-tab="cibo" aria-label="Alimentazione"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7.5c-2.2-1.8-6.5-1.2-6.5 3.3 0 4.2 3 9.2 6.5 9.2s6.5-5 6.5-9.2c0-4.5-4.3-5.1-6.5-3.3z"/><path d="M12 7.5c0-2.2 1.2-3.8 3.5-4.5"/></svg><span>Cibo</span></button>
+  <button data-tab="resp" aria-label="Respirazioni"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h10a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7"/></svg><span>Respiro</span></button>
+  <button data-tab="auto" aria-label="Autonomo"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/></svg><span>Autonomo</span></button>
 </nav>
 
 <script>
@@ -593,34 +706,42 @@ function riga(x,me,extra){
 }
 
 /* un singolo slot */
+const MOD_ICO={
+  "FORZA":'<path d="M3 20h5v-5h5v-5h5V5h3"/>',
+  "VELOCITÀ":'<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+  "RESISTENZA":'<path d="M3 12h4l2-5 4 10 2-5h6"/>',
+  "CALCETTONE":'<circle cx="12" cy="12" r="9"/><path d="M12 7.5l4 2.9-1.5 4.6h-5L8 10.4z"/>'
+};
+function modKey(m){ return m.replace("À","A"); }
+function slotHead(di,si,mod,right){
+  return '<div class="slothead"><span class="ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true">'+(MOD_ICO[mod]||"")+'</svg></span>'+
+    '<span class="tt"><span class="time">'+SLOTS[si]+'</span><span class="mod">'+mod+'</span></span>'+right+'</div>';
+}
 function slotHTML(di,si,mod,me){
   if(annullato(di,si)){
-    return '<div class="slot off"><div class="slothead">'+
-      '<span class="time">'+SLOTS[si]+'</span>'+
-      '<span class="mod">'+mod+'</span>'+
-      '<span class="offtag">ANNULLATO</span></div>'+
-      '<p class="note" style="margin:8px 0 0">Questo corso non si fa. Se vuoi allenarti vai al <b>campo 8</b>.</p></div>';
+    return '<div class="slot off m-'+modKey(mod)+'">'+slotHead(di,si,mod,'<span class="offtag">ANNULLATO</span>')+
+      '<div class="slotbody"><p class="note" style="margin:0">Questo corso non si fa. Se vuoi allenarti vai al <b>campo 8</b>.</p></div></div>';
   }
   const cap=POSTI[mod]||8;
   const lista=DATA.filter(function(x){ return x.day===di&&x.slot===si; });
   const tit=lista.slice(0,cap), ris=lista.slice(cap,cap+MAX_RISERVE);
   const iscritto=lista.some(function(x){ return x.nome===me; });
   const pieno=tit.length>=cap, risPieno=ris.length>=MAX_RISERVE;
-  let h='<div class="slot"><div class="slothead">'+
-    '<span class="time">'+SLOTS[si]+'</span>'+
-    '<span class="mod '+(mod==="CALCETTONE"?"cal":"")+'">'+mod+'</span>'+
-    '<span class="cap">'+tit.length+'/'+cap+(ris.length?' · '+ris.length+' ris.':'')+'</span></div>';
+  const pct=Math.min(100,Math.round(tit.length/cap*100));
+  let h='<div class="slot m-'+modKey(mod)+'">'+
+    slotHead(di,si,mod,'<span class="cap">'+tit.length+'/'+cap+'<small>'+(pieno?'COMPLETO':'POSTI')+(ris.length?' · '+ris.length+' RIS.':'')+'</small></span>')+
+    '<div class="slotbody"><div class="meter'+(pieno?' full':'')+'"><i style="width:'+pct+'%"></i></div>';
   h+='<ol class="lst">'+(tit.length
       ? tit.map(function(x){ return riga(x,me); }).join("")
-      : '<li style="list-style:none;margin-left:-22px;color:#7A7A7A">Nessun iscritto</li>')+'</ol>';
+      : '<li class="vuoto">Nessun iscritto: sii il primo!</li>')+'</ol>';
   if(ris.length) h+='<div class="resbox"><b>RISERVE</b><ol class="lst">'+
       ris.map(function(x){ return riga(x,me,"res"); }).join("")+'</ol></div>';
   if(!me) h+='<button class="btn" disabled>Scegli prima il tuo nome</button>';
-  else if(iscritto) h+='<button class="btn" disabled>Sei iscritto ✓</button>';
+  else if(iscritto) h+='<button class="btn done" disabled>✓ Sei iscritto</button>';
   else if(!pieno) h+='<button class="btn" data-go="'+di+'-'+si+'">ISCRIVITI</button>';
   else if(!risPieno) h+='<button class="btn res" data-go="'+di+'-'+si+'">METTITI IN RISERVA ('+(ris.length+1)+'ª)</button>';
   else h+='<button class="btn" disabled>Completo, riserve esaurite</button>';
-  return h+'</div>';
+  return h+'</div></div>';
 }
 
 /* ---- sezione OGGI ---- */
@@ -640,7 +761,7 @@ function renderOggi(){
     '<div class="small">Se non fai il Plus, questo è il lavoro della giornata sul campo 8.</div>';
   $("oggiTitolo").textContent="Corsi Plus di oggi";
   if(!CONFIGURED){ $("oggiBox").innerHTML=""; return; }
-  let h='<div class="day today"><div class="dayhead"><span>'+DAYS[t]+' '+fmt.format(dateOf(t))+'</span><span>OGGI</span></div>';
+  let h='<div class="day today"><div class="dayhead"><span>'+DAYS[t]+' '+fmt.format(dateOf(t))+'</span><span class="tag">OGGI</span></div>';
   PLUS[t].forEach(function(mod,si){ h+=slotHTML(t,si,mod,me); });
   $("oggiBox").innerHTML=h+'</div>';
 }
@@ -653,7 +774,7 @@ function renderSettimana(){
   DAYS.forEach(function(dn,di){
     h+='<div class="day '+(di===today?"today":"")+'">'+
        '<div class="dayhead"><span>'+dn+' '+fmt.format(dateOf(di))+'</span>'+
-       (di===today?'<span>OGGI</span>':'')+'</div>';
+       (di===today?'<span class="tag">OGGI</span>':'')+'</div>';
     PLUS[di].forEach(function(mod,si){ h+=slotHTML(di,si,mod,me); });
     h+='</div>';
   });
@@ -688,12 +809,20 @@ function bind(){
   });
 }
 
+function renderHello(){
+  const me=sel.value, el=$("hello");
+  if(!me){ el.innerHTML=""; return; }
+  const miei=DATA.filter(function(x){ return x.nome===me; }).length;
+  const nome=me.split(" ").slice(1).join(" ")||me;
+  el.innerHTML='<div class="hello'+(miei?'':' none')+'"><b>Ciao '+nome+'!</b><span class="cnt">'+
+    (miei? miei+(miei===1?' Plus':' Plus')+(IS_WEEKEND?' prossima sett.':' questa sett.') : 'Nessun Plus ancora')+'</span></div>';
+}
 function renderAll(){
   if(!CONFIGURED){
     $("setup").innerHTML='<div class="setup"><b>App non ancora collegata al database.</b><br>'+
       'Inserisci <code>SUPABASE_URL</code> e <code>SUPABASE_KEY</code> in cima a <code>index.html</code>.</div>';
   }
-  renderOggi(); renderSettimana(); bind();
+  renderHello(); renderOggi(); renderSettimana(); bind();
   if(!$("tab-staff").classList.contains("hidden")) renderStaff();
 }
 
@@ -944,7 +1073,7 @@ function renderSubtabs(){
 }
 
 function apriStaff(){
-  document.querySelectorAll("nav button").forEach(function(x){ x.classList.remove("on"); });
+  document.querySelectorAll("[data-tab]").forEach(function(x){ x.classList.remove("on"); });
   ["oggi","sett","reg","cibo","resp","auto"].forEach(function(t){
     document.getElementById("tab-"+t).classList.add("hidden"); });
   $("tab-staff").classList.remove("hidden");
@@ -961,10 +1090,9 @@ $("posterBtn").onclick=function(){
 };
 $("zoomClose").onclick=function(){ $("zoom").classList.add("hidden"); };
 
-document.querySelectorAll("nav button").forEach(function(b){
+document.querySelectorAll("[data-tab]").forEach(function(b){
   b.onclick=function(){
-    document.querySelectorAll("nav button").forEach(function(x){ x.classList.remove("on"); });
-    b.classList.add("on");
+    document.querySelectorAll("[data-tab]").forEach(function(x){ x.classList.toggle("on", x.dataset.tab===b.dataset.tab); });
     $("tab-staff").classList.add("hidden");
     $("staffBtn").classList.remove("on");
     ["oggi","sett","reg","cibo","resp","auto"].forEach(function(t){
